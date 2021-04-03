@@ -1,6 +1,6 @@
 # 👓 Privacy Glasses plugin for Obsidian
 
-"Privacy Glasses" plugin for [Obsidian](http://obsidian.md). No more worrying about people reading off your screen in public!
+"Privacy Glasses" plugin for [Obsidian](http://obsidian.md). Preserve your privacy when working in public!
 
 ![](https://raw.githubusercontent.com/jillalberts/privacy-glasses/master/assets/screencast.gif)
 

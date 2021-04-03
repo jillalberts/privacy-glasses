@@ -1,56 +1,116 @@
-## Obsidian Sample Plugin
+# 👓 Privacy Glasses plugin for Obsidian
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+"Privacy Glasses" plugin for [Obsidian](http://obsidian.md). No more worrying about people reading off your screen in public!
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+![](https://raw.githubusercontent.com/jillalberts/privacy-glasses/master/assets/screencast.gif)
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+https://github.com/jillalberts/privacy-glasses
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Changes the default font color to red using `styles.css`.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+https://www.buymeacoffee.com/jillalberts
 
-### First time developing plugins?
+### 👀 What it does
 
-Quick starting guide for new plugin devs:
+This plugin creates a "Privacy Glasses" icon (👓) on the left-hand ribbon as well as a "Toggle Privacy Glasses" command in the Command Palette (Ctrl-P).
 
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
+- Activating either one will toggle Privacy Glasses. 
 
-### Releasing new releases
+When Privacy Glasses is active your document's text, as well as the title of the current document in the header, will be obfuscated according to the settings you choose. You can also optionally blur text in Obsidian's sidebars.
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments.
-- Publish the release.
+- **Blurry Text**: text appears blurred and (hopefully) unreadable. 
 
-### Adding your plugin to the community plugin list
+	- You can adjust the blur level in the plugin's settings.
 
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+- **Solid Blocks:** Text is obscured with solid blocks of the foreground (text) color.
 
-### How to use
+- **Circles** (experimental): All characters appear as circles, like in a password input field. (see "Known Issues" section below)
 
-- Clone this repo.
-- `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
+**❗ In any mode, you can temporarily reveal a small section of text simply by hovering your mouse over it.**
 
-### Manually installing the plugin
+- This is useful for finding your place in a document or doing a quick check for typos.
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+- To obfuscate it again, just move your mouse pointer away.
 
-### API Documentation
+In Edit Mode you can continue to type and navigate via your keyboard without revealing any text (as long as your mouse pointer is elsewhere).
 
-See https://github.com/obsidianmd/obsidian-api
+To reveal all your text again, just click the "Privacy Glasses" icon (👓) again in the left ribbon or run the "Toggle Privacy Glasses" command in the Command Palette (Ctrl-P) .
+
+This plugin works with most themes in either Light mode or Dark Mode.
+
+### ❓Why?
+
+- You want to work on your brilliant screenplay on the bus/train without the person sitting next to you stealing your amazing ideas.
+
+- You are journaling at a coffee shop and don't want people at nearby tables to read your deepest inner thoughts.
+
+- You are drafting a sensitive company memo on an airplane and don't want your seatmate to snap a picture of what you're typing.
+
+- You're a writer who just wants to get words down on the page while limiting your habit of going back to self-edit.
+
+### ❌ What this plugin does NOT do
+
+- This plugin does not encrypt your writing.
+	- It just temporarily layers a new CSS style on top of your current Obsidian theme. Your files remain unchanged.
+
+- This plugin does not read or change any of the markdown files in your vault.
+	- It just temporarily layers new CSS styles on top of your current Obsidian theme. It knows nothing about the contents of your files.
+
+- This plugin does not provide any security against anything other than someone casually reading off of your screen.
+
+### 💪 For power users
+
+- The "Toggle Privacy Glasses" command can be bound to a keyboard shortcut in Obsidian's settings for maximum ease of activation!
+
+- You can combine this plugin with the "Hider" plugin to hide Obsidian's title bar, making it impossible for an onlooker to see the name of your vault!
+
+- You can work on a sensitive obfuscated document while keeping a non-sensitive one visible in a second pane! 
+	- In the plugin's settings choose an obfuscation mode for Edit Mode, but select `[Off]` for Preview Mode.
+	- Activate Privacy Glasses (through the 👓 ribbon icon or "Toggle Privacy Glasses" command)
+	- Now you can open your documents in different panes and switch the non-sensitive one(s) to Preview Mode. The sensitive document you're working on in Edit Mode will remain obfuscated while the non-sensitive one(s) in Preview Mode will remain fully visible.
+	- If you need help with working with multiple panes, you can refer to the "Panes" section of the Obsidian Help vault.
+
+### ⚠️ Known Issues
+
+- When "Circles" (experimental) obfuscation mode is activated:
+	- In Edit Mode the cursor sometimes appears to jump around.
+		- This happens because this mode makes every character the same width, which can alter the line length. The cursor will remain on the same character -- you can keep typing from where you left off -- but it just displays a bit oddly.
+	- In both Edit Mode and Preview Mode the line height can change unexpectedly when you hover your mouse over a section.
+
+- This plugin already works pretty well across a variety of themes, but **if you're seeing sections of unblurred text even when your mouse pointer isn't over it, please email me or file an issue on GitHub**.
+
+	- Please include what exactly is not blurred and what theme, extensions, and CSS snippets you're using. In the meantime, you can try using a different theme as a workaround. (If the issue persists across themes, including with the "None" theme, it's almost certainly caused by interference with another plugin or snippet; I'd be interested in taking a look.)
+
+- There are undoubtedly many bugs remaining (though they should only affect appearance, not endanger your files). Please report issues per the "Contact the author" section below.
+
+### 💡 Possible ideas for future versions:
+
+*You can suggest a feature by opening an issue on github.*
+
+- Improve compatibilty with popular plugins? Suggestions and bug reports welcome!
+
+- Further compatibility testing with a variety of themes and uses
+
+
+### ✍ Contact the author
+
+- To report an issue or suggest a feature:
+
+	- open an issue on GitHub: https://github.com/jillalberts/privacy-glasses/issues
+
+	- or email jillian dot alberts at gmail dot com
+
+- Support the development of this FREE plugin: https://www.buymeacoffee.com/jillalberts
+
+### 🕰 Release History
+
+- 2021-04-04: Version 0.4.0, first version to be fully submitted to the Obsidian Community Plugins directory
+	- Fixed header blur levels
+	- Added option to adjust the blur level in a (new) settings dialog
+	- Improved ability to respect various themes' colors while text is blurred
+	- Added ability to blur content in Obsidian's sidebars
+	- Added blur functionality for Preview Mode
+	- Added "Solid Blocks" obfuscation option for Edit Mode, Preview Mode, and Sidebars
+	- Added "Circles" experimental obfuscation option for Edit Mode, Preview Mode, and Sidebars
+	- Changed name to "Privacy Glasses"
+	- squashed many bugs
+- 2021-03-30: Version 0.1 (unlisted alpha release under the name "Blurry Edit Mode"). Supported blurry text only in Edit Mode only. Adjusting the blur level required manually editing a CSS file.
+

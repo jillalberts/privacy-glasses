@@ -1,14 +1,24 @@
 {
-  "name": "obsidian-sample-plugin",
-  "version": "0.9.7",
-  "description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+  "name": "privacy-glasses",
+  "version": "0.4.0",
+  "description": "Provides a button and command to toggle a mode for better privacy in public settings. No more 'shoulder surfing!'",
   "main": "main.js",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
     "build": "rollup --config rollup.config.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "blur",
+    "blurred",
+    "privacy",
+    "private",
+    "theme",
+    "appearance",
+    "secure",
+    "security",
+    "edit"
+  ],
+  "author": "Jill Alberts",
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.1.0",

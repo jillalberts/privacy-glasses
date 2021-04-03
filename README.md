@@ -56,6 +56,8 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 - This plugin does not provide any security against anything other than someone casually reading off of your screen.
 
+- This plugin does not connect to the internet for any reason.
+
 ### 💪 For power users
 
 - The "Toggle Privacy Glasses" command can be bound to a keyboard shortcut in Obsidian's settings for maximum ease of activation!
@@ -113,4 +115,3 @@ This plugin works with most themes in either Light mode or Dark Mode.
 	- Changed name to "Privacy Glasses"
 	- squashed many bugs
 - 2021-03-30: Version 0.1 (unlisted alpha release under the name "Blurry Edit Mode"). Supported blurry text only in Edit Mode only. Adjusting the blur level required manually editing a CSS file.
-

@@ -77,6 +77,10 @@ This plugin works with most themes in either Light mode or Dark Mode.
 		- This happens because this mode makes every character the same width, which can alter the line length. The cursor will remain on the same character -- you can keep typing from where you left off -- but it just displays a bit oddly.
 	- In both Edit Mode and Preview Mode the line height can change unexpectedly when you hover your mouse over a section.
 
+- "Solid Blocks" mode works okay in Edit Mode, but infor Preview Mode it messes up some formatting and generally behaves oddly.
+
+	- This is due to the CSS `display:inline` which is needed to make the blocks of color fit more tightly to the actual text (rather than being giant blocks of color even where there's no text)
+
 - This plugin already works pretty well across a variety of themes, but **if you're seeing sections of unblurred text even when your mouse pointer isn't over it, please email me or file an issue on GitHub**.
 
 	- Please include what exactly is not blurred and what theme, extensions, and CSS snippets you're using. In the meantime, you can try using a different theme as a workaround. (If the issue persists across themes, including with the "None" theme, it's almost certainly caused by interference with another plugin or snippet; I'd be interested in taking a look.)

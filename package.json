@@ -1,7 +1,7 @@
 {
   "name": "privacy-glasses",
-  "version": "0.4.0",
-  "description": "Provides a button and command to toggle a mode for better privacy in public settings. No more 'shoulder surfing!'",
+  "version": "0.4.1",
+  "description": "Provides a button and command to toggle a mode for better privacy while working in public.",
   "main": "main.js",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
@@ -12,11 +12,19 @@
     "blurred",
     "privacy",
     "private",
+    "public",
+    "display",
     "theme",
     "appearance",
     "secure",
     "security",
-    "edit"
+    "edit",
+    "glasses",
+    "text",
+    "block",
+    "circles",
+    "obfuscate",
+    "obfuscated"
   ],
   "author": "Jill Alberts",
   "license": "MIT",

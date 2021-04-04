@@ -1,3 +1,8 @@
+/* 	
+	Privacy Glasses plugin for Obsidian
+	Copyright 2021 Jill Alberts
+	Licensed under the MIT License (http://opensource.org/licenses/MIT) 
+*/
 
 /*****************************************************************/
 /**  BLUR CONTENT IN EDIT MODE									**/
@@ -59,7 +64,7 @@ body.privacy-glasses.blur-preview .markdown-preview-section div img,
 body.privacy-glasses.blur-preview .markdown-preview-section div svg {
     filter: blur(calc(var(--blurLevel)*3)) !important;
  }
- /* unblur images on hovc*/
+ /* unblur images on hover */
 body.privacy-glasses.blur-preview .markdown-preview-section div img:hover,
 body.privacy-glasses.blur-preview .markdown-preview-section div svg:hover {
     filter: none !important;

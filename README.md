@@ -56,7 +56,7 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 - This plugin does not provide any security against anything other than someone casually reading off of your screen.
 
-- This plugin does not connect to the internet for any reason.
+- This plugin does not connect to the internet for any reason. (However, if you click one of the links in the settings dialog then Obsidian will launch your browser to load the website.)
 
 ### 💪 For power users
 
@@ -81,7 +81,7 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 	- Please include what exactly is not blurred and what theme, extensions, and CSS snippets you're using. In the meantime, you can try using a different theme as a workaround. (If the issue persists across themes, including with the "None" theme, it's almost certainly caused by interference with another plugin or snippet; I'd be interested in taking a look.)
 
-- There are undoubtedly many bugs remaining (though they should only affect appearance, not endanger your files). Please report issues per the "Contact the author" section below.
+- There are undoubtedly many bugs remaining (though they should only affect appearance, nothing that would endanger your files). Please report issues per the "Contact the author" section below.
 
 ### 💡 Possible ideas for future versions:
 
@@ -100,18 +100,26 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 	- or email jillian dot alberts at gmail dot com
 
-- Support the development of this FREE plugin: https://www.buymeacoffee.com/jillalberts
+- Support the development of this free plugin: https://www.buymeacoffee.com/jillalberts
 
 ### 🕰 Release History
 
+- 2021-04-04: Version 0.4.1
+	- Changed blur level selector to a slider (was a dropdown)
+		- Added indication of current blur level setting next to the slider
+	- Activating or deactivating Privacy Glasses mode now provides a more visible notification
+	- Bug fix: the `<style>` element the plugin creates is now properly removed when the plugin is unloaded
+	- removed svg tags from icon variable
+	- Cleaned up and improved code
+	- TODO for next version: try to improve CSS, do more compatibility testing
 - 2021-04-04: Version 0.4.0, first version to be fully submitted to the Obsidian Community Plugins directory
 	- Fixed header blur levels
 	- Added option to adjust the blur level in a (new) settings dialog
 	- Improved ability to respect various themes' colors while text is blurred
-	- Added ability to blur content in Obsidian's sidebars
+	- Added ability to blur text in Obsidian's sidebars
 	- Added blur functionality for Preview Mode
 	- Added "Solid Blocks" obfuscation option for Edit Mode, Preview Mode, and Sidebars
 	- Added "Circles" experimental obfuscation option for Edit Mode, Preview Mode, and Sidebars
 	- Changed name to "Privacy Glasses"
 	- squashed many bugs
-- 2021-03-30: Version 0.1 (unlisted alpha release under the name "Blurry Edit Mode"). Supported blurry text only in Edit Mode only. Adjusting the blur level required manually editing a CSS file.
+- 2021-03-30: Version 0.1 (preliminary release under the name "Blurry Edit Mode"). Supported blurry text (only) in Edit Mode (only). Adjusting the blur level required manually editing a CSS file.

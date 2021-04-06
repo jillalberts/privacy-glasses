@@ -6,34 +6,24 @@
 
 import { App, Plugin, PluginSettingTab, Setting, addIcon, ToggleComponent, Notice} from 'obsidian';
 
-class StatusBar {
-	private statusBarEl: HTMLElement;
-  
-	constructor(statusBarEl: HTMLElement) {
-	  this.statusBarEl = statusBarEl;
-	}
-  
-	displayText(text: string) {
-	  this.statusBarEl.setText(text);
-	}
-}
-
 export default class PrivacyGlassesPlugin extends Plugin {
 
 	settings: PrivacyGlassesSettings;
-	statusBar: StatusBar;
+	statusBar: HTMLElement;
 	noticeMsg: Notice;
+	blurLevelStyleEl: HTMLElement;
+	privacyGlasses: boolean = false;
 
 	async onload() {
-        
-		this.statusBar = new StatusBar(this.addStatusBarItem());
-		this.statusBar.displayText('Privacy Glasses Off');
-		
+        		
+		this.statusBar = this.addStatusBarItem();
+
 		await this.loadSettings();
 
 		this.addSettingTab(new privacyGlassesSettingTab(this.app, this));
 
 		addIcon('glasses', privacyGlassesIcon);
+		
 		this.addRibbonIcon('glasses', 'Toggle Privacy Glasses', () => {
 			this.toggleGlasses();
 		});
@@ -45,18 +35,36 @@ export default class PrivacyGlassesPlugin extends Plugin {
 				this.toggleGlasses();
 			}
 		});
-		
-		await this.refresh(false);
+
+		this.privacyGlasses = true;	// we do not want to automatically activate the plugin upon vault open or initial plugin activation, 
+									// so we temporarily set it to true just until it quickly gets flipped to false in toggleGlasses() on the next line
+		await this.toggleGlasses(true); // flips this.privacyGlasses to false and updates statusbar. 'true' means do toggle quietly (do not display a Notice)
 	}
 
-	async toggleGlasses() {
-		this.settings.privacyGlasses = !this.settings.privacyGlasses;
-		this.statusBar.displayText(this.settings.privacyGlasses ? 'Privacy Glasses ON' : 'Privacy Glasses Off');
-		this.noticeMsg = new Notice(this.settings.privacyGlasses ? 'Privacy Glasses On' : 'Privacy Glasses Off', 2000);
-		this.refresh(false);
+	async toggleGlasses(quiet: boolean = false) {
+
+		this.privacyGlasses = !this.privacyGlasses;
+		
+		let pgOnMsg = 'Privacy Glasses On';
+		let pgOffMsg = 'Privacy Glasses Off';
+		if (!quiet) {
+			this.noticeMsg = new Notice(this.privacyGlasses ? pgOnMsg : pgOffMsg, 2000);
+		}
+
+		this.statusBar.setText(this.privacyGlasses ? pgOnMsg : pgOffMsg);
+
+		if (this.privacyGlasses) {
+			await this.addBlurLevelEl();
+		}
+		else {
+			await this.removeBlurLevelEl();
+		}
+
+		this.refresh(false); // false = no settings changes to save
 	}
 
 	async refresh(saveIt: boolean) {
+
 		this.updateStyle();
 		if (saveIt) {
 			await this.saveSettings();
@@ -64,29 +72,30 @@ export default class PrivacyGlassesPlugin extends Plugin {
 	}
 
 	async onunload() {
+
 		await this.saveSettings();
-		this.removeStyle();
+		await this.removeCssClasses();
+		await this.removeBlurLevelEl();
+		this.statusBar.remove();
 	}
 
 	async loadSettings() {
+
 		this.settings = Object.assign(DEFAULT_SETTINGS, await this.loadData());
 	}
 	
 	async saveSettings() {
+
 		await this.saveData(this.settings);
 	}
 	
 	async updateStyle() {
 
-		await this.removeStyle();
+		await this.removeCssClasses();
 
-		var blurLevelStyleEl = document.createElement('style');
-		blurLevelStyleEl.id = 'privacyGlassesBlurLevel';
-		document.head.appendChild(blurLevelStyleEl);
-		var css = `body {--blurLevel:${this.settings.blurLevel}em};`;
-		blurLevelStyleEl.appendChild(document.createTextNode(css));	
+		if (this.privacyGlasses) {
 
-		if (this.settings.privacyGlasses) {
+			await this.updateBlurLevelEl();
 
 			document.body.classList.add('privacy-glasses');
 
@@ -103,8 +112,29 @@ export default class PrivacyGlassesPlugin extends Plugin {
 			if (this.settings.previewBlurMethod == 'circlesPreview') {document.body.classList.add('circles-preview');}
 		}
 	}	
+
+	async addBlurLevelEl() {
+
+		this.blurLevelStyleEl = document.createElement('style');
+		this.blurLevelStyleEl.id = 'privacyGlassesBlurLevel';
+		document.head.appendChild(this.blurLevelStyleEl);
+		await this.updateBlurLevelEl();
+	}
+
+	async updateBlurLevelEl() {
+
+		this.blurLevelStyleEl.textContent = `body {--blurLevel:${this.settings.blurLevel}em};`;
+	}
+
+	async removeBlurLevelEl() {
+
+		if (this.blurLevelStyleEl) {
+			this.blurLevelStyleEl.remove();
+		}
+	}
 	
-	async removeStyle() {
+	async removeCssClasses() {
+
 		document.body.removeClass(	'privacy-glasses',
 									'blur-ui',
 									'block-ui',
@@ -115,11 +145,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
 									'blur-preview',
 									'block-preview',
 									'circles-preview'
-								);
-		let el = document.getElementById('privacyGlassesBlurLevel');
-		if (el) {
-			el.remove();
-		}
+								 );
 	}
 }
 
@@ -165,7 +191,7 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 			.setName('Privacy Glasses Activated')
 			.setDesc('Indicates whether or not the plugin is currently activated.')
 			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.privacyGlasses);
+				toggle.setValue(this.plugin.privacyGlasses);
 				toggle.onChange(async (value) => {
 					await this.plugin.toggleGlasses();
 				});

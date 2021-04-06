@@ -1,7 +1,7 @@
 {
   "name": "privacy-glasses",
-  "version": "0.4.1",
-  "description": "Provides a button and command to toggle a mode for better privacy while working in public.",
+  "version": "0.4.2",
+  "description": "Provides a button and command to obfuscate onscreen text for better privacy in public settings.",
   "main": "main.js",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",

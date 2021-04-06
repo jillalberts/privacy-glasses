@@ -77,9 +77,11 @@ This plugin works with most themes in either Light mode or Dark Mode.
 		- This happens because this mode makes every character the same width, which can alter the line length. The cursor will remain on the same character -- you can keep typing from where you left off -- but it just displays a bit oddly.
 	- In both Edit Mode and Preview Mode the line height can change unexpectedly when you hover your mouse over a section.
 
-- "Solid Blocks" mode works okay in Edit Mode, but infor Preview Mode it messes up some formatting and generally behaves oddly.
+- "Solid Blocks" mode works okay in Edit Mode, but in Preview Mode it messes up some formatting and generally behaves oddly.
 
-	- This is due to the CSS `display:inline` which is needed to make the blocks of color fit more tightly to the actual text (rather than being giant blocks of color even where there's no text)
+	- This is due to the CSS `display:inline` which is needed to make the blocks of color fit more tightly to the actual text (rather than being giant blocks of color even where there's no text).
+
+- In some modes, in Preview mode the titles of transcluded files are not obfuscated. This is something I will investigate and hopefully fix in a future version.
 
 - This plugin already works pretty well across a variety of themes, but **if you're seeing sections of unblurred text even when your mouse pointer isn't over it, please email me or file an issue on GitHub**.
 
@@ -95,6 +97,11 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 - Further compatibility testing with a variety of themes and uses
 
+- Improve CSS
+
+- Investigate other ways to obfuscate text???
+
+- Test whether plugin works on Obsidian Mobile beta
 
 ### ✍ Contact the author
 
@@ -108,6 +115,13 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 ### 🕰 Release History
 
+- 2021-04-05: Version 0.4.2
+	- cleaned up statusbar code
+	- activation messages now match (and are stored in variables)
+	- The `style` element containing blurLevel is now referenced in a better way in the code
+	- The `style` element containing blurLevel is now only created when the plugin is actively on (not just when the plugin's enabled and available to use). It is cleanly removed when the plugin is toggled off (rather than waiting until the plugin is unloaded to be removed)
+	- the variable that stores whether or not the plugin is on is no longer saved in the plugin's settings, since I think having the plugin activate upon first loading a vault would probably be more annoying than useful. If users want the ability to save the plugin's state across sessions then I can bring it back in the future.
+	- misc small code improvements
 - 2021-04-04: Version 0.4.1
 	- Changed blur level selector to a slider (was a dropdown)
 		- Added indication of current blur level setting next to the slider

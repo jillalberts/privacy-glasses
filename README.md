@@ -103,6 +103,8 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 - Test whether plugin works on Obsidian Mobile beta
 
+- Add the ability to define certain "private" or "sensitive" pages on which the plugin turns on automatically?
+
 ### ✍ Contact the author
 
 - To report an issue or suggest a feature:

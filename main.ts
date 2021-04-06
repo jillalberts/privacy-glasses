@@ -54,10 +54,10 @@ export default class PrivacyGlassesPlugin extends Plugin {
 		this.statusBar.setText(this.privacyGlasses ? pgOnMsg : pgOffMsg);
 
 		if (this.privacyGlasses) {
-			await this.addBlurLevelEl();
+			this.addBlurLevelEl();
 		}
 		else {
-			await this.removeBlurLevelEl();
+			this.removeBlurLevelEl();
 		}
 
 		this.refresh(false); // false = no settings changes to save
@@ -73,10 +73,10 @@ export default class PrivacyGlassesPlugin extends Plugin {
 
 	async onunload() {
 
-		await this.saveSettings();
-		await this.removeCssClasses();
-		await this.removeBlurLevelEl();
+		this.removeCssClasses();
+		this.removeBlurLevelEl();
 		this.statusBar.remove();
+		await this.saveSettings();
 	}
 
 	async loadSettings() {
@@ -89,13 +89,13 @@ export default class PrivacyGlassesPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 	
-	async updateStyle() {
+	updateStyle() {
 
-		await this.removeCssClasses();
+		this.removeCssClasses();
 
 		if (this.privacyGlasses) {
 
-			await this.updateBlurLevelEl();
+			this.updateBlurLevelEl();
 
 			document.body.classList.add('privacy-glasses');
 
@@ -113,27 +113,27 @@ export default class PrivacyGlassesPlugin extends Plugin {
 		}
 	}	
 
-	async addBlurLevelEl() {
+	addBlurLevelEl() {
 
 		this.blurLevelStyleEl = document.createElement('style');
 		this.blurLevelStyleEl.id = 'privacyGlassesBlurLevel';
 		document.head.appendChild(this.blurLevelStyleEl);
-		await this.updateBlurLevelEl();
+		this.updateBlurLevelEl();
 	}
 
-	async updateBlurLevelEl() {
+	updateBlurLevelEl() {
 
 		this.blurLevelStyleEl.textContent = `body {--blurLevel:${this.settings.blurLevel}em};`;
 	}
 
-	async removeBlurLevelEl() {
+	removeBlurLevelEl() {
 
 		if (this.blurLevelStyleEl) {
 			this.blurLevelStyleEl.remove();
 		}
 	}
 	
-	async removeCssClasses() {
+	removeCssClasses() {
 
 		document.body.removeClass(	'privacy-glasses',
 									'blur-ui',

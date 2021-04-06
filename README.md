@@ -115,6 +115,8 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 ### 🕰 Release History
 
+- 2021-04-06: Version 0.4.3
+	- minor code improvements
 - 2021-04-05: Version 0.4.2
 	- cleaned up statusbar code
 	- activation messages now match (and are stored in variables)

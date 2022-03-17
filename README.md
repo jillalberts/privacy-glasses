@@ -6,6 +6,14 @@
 
 https://github.com/jillalberts/privacy-glasses
 
+---
+
+# Important note:
+
+### I am no longer working on this project and am unlikely to return to it; it is pretty much abandoned. But the code is open-source and distributed under the MIT license, so anyone who wants to fix or improve anything is free to fork the project and do pretty much whatever they'd like.
+
+---
+
 https://www.buymeacoffee.com/jillalberts
 
 ### 👀 What it does

@@ -88,12 +88,14 @@ body.privacy-glasses.blur-preview .workspace-leaf-content[data-mode="preview"] .
 /*****************************************************************/
 /**  BLUR UI (sidebar content)									**/
 /*****************************************************************/       
-body.privacy-glasses.blur-ui .workspace-tabs div {
+body.privacy-glasses.blur-ui .workspace-tabs div,
+body.privacy-glasses.blur-ui .workspace-drawer div {
 	text-shadow: 0 0 var(--blurLevel) currentColor !important;
 	-webkit-text-fill-color: transparent !important;
 }
 /* unblur on hover */
-body.privacy-glasses.blur-ui .workspace-tabs div:hover {
+body.privacy-glasses.blur-ui .workspace-tabs div:hover,
+body.privacy-glasses.blur-ui .workspace-drawer div:hover {
 	text-shadow: none !important;
 	-webkit-text-fill-color: unset !important;
 }

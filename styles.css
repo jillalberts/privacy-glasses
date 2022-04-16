@@ -9,24 +9,28 @@
 /*****************************************************************/ 
 
 /* blur content */
-body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line span {
+body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line span,
+body.privacy-glasses.blur-edit .markdown-source-view div.cm-line {
     text-shadow: 0 0 var(--blurLevel) currentColor !important;
 	-webkit-text-fill-color: transparent !important;
 }
 /* unblur on hover */
-body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line:hover span {
+body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line:hover span,
+body.privacy-glasses.blur-edit .markdown-source-view div.cm-line:hover {
     text-shadow: none !important;
 	-webkit-text-fill-color: unset !important;
 }
 
 /* fix **bold text** in Obsidianite theme (and maybe others) */
-body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line span.cm-strong {
+body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line span.cm-strong,
+body.privacy-glasses.blur-edit .markdown-source-view div.cm-line span.cm-strong {
 	text-shadow: 0 0 var(--blurLevel) currentColor !important;
     background-color: transparent !important;
     background-image: none !important;
     -webkit-text-fill-color: transparent;
 } 
-body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line:hover span.cm-strong {
+body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line:hover span.cm-strong,
+body.privacy-glasses.blur-edit .markdown-source-view div.cm-line:hover span.cm-strong {
 	 text-shadow: none !important;
      -webkit-text-fill-color: unset;
 } 
@@ -175,12 +179,14 @@ body.privacy-glasses.block-preview .workspace-leaf-content[data-mode="preview"] 
 /*****************************************************************/ 
 
 /* BLOCK NORMAL TEXT */
-body.privacy-glasses.block-edit .markdown-source-view pre.CodeMirror-line span {
+body.privacy-glasses.block-edit .markdown-source-view pre.CodeMirror-line span,
+body.privacy-glasses.block-edit .markdown-source-view div.cm-line {
 	background-color: currentColor !important;
 	text-shadow: none !important; /*needed for e.g. Obsidianite theme */
 }
 /* unblock normal text */
-body.privacy-glasses.block-edit .markdown-source-view pre.CodeMirror-line:hover span {
+body.privacy-glasses.block-edit .markdown-source-view pre.CodeMirror-line:hover span,
+body.privacy-glasses.block-edit .markdown-source-view div.cm-line:hover {
 	background-color: transparent !important;
 }
 
@@ -270,16 +276,20 @@ body.privacy-glasses.circles-preview .workspace-leaf-content[data-mode="preview"
 /**  CIRCLES MODE FOR EDIT MODE									**/
 /*****************************************************************/ 
 
-body.privacy-glasses.circles-edit .markdown-source-view pre.CodeMirror-line span {
+body.privacy-glasses.circles-edit .markdown-source-view pre.CodeMirror-line span,
+body.privacy-glasses.circles-edit .markdown-source-view div.cm-line {
 	-webkit-text-security: disc !important;
 	text-shadow: none !important;
 }
 
 /*make blank lines invisible */
-body.privacy-glasses.circles-edit .markdown-source-view pre.CodeMirror-line span[cm-text] {
+body.privacy-glasses.circles-edit .markdown-source-view pre.CodeMirror-line span[cm-text]
+/* Todo: an equivalent selector for this one. Blank lines are simply <div class="cm-line"><br></div>
+ and not very distinguishable from non-empty lines */ {
 	-webkit-text-security: none !important;
 }
-body.privacy-glasses.circles-edit .markdown-source-view pre.CodeMirror-line:hover span {
+body.privacy-glasses.circles-edit .markdown-source-view pre.CodeMirror-line:hover span,
+body.privacy-glasses.circles-edit .markdown-source-view div.cm-line:hover {
 	-webkit-text-security: none !important;
 }
 

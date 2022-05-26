@@ -100,6 +100,30 @@ body.privacy-glasses.blur-ui .workspace-drawer div:hover {
 	-webkit-text-fill-color: unset !important;
 }
 
+/* blur quick explorer https://github.com/pjeby/quick-explorer */
+
+body.privacy-glasses.blur-ui .titlebar #quick-explorer {
+	text-shadow: 0 0 var(--blurLevel) currentColor !important;
+	-webkit-text-fill-color: transparent !important;
+}
+
+body.privacy-glasses.blur-ui .titlebar #quick-explorer:hover {
+	text-shadow: none !important;
+	-webkit-text-fill-color: unset !important;
+}
+
+/* blur hover editor titlebar https://github.com/nothingislost/obsidian-hover-editor */
+
+body.privacy-glasses.blur-ui .hover-editor .popover-title {
+	text-shadow: 0 0 var(--blurLevel) currentColor !important;
+	-webkit-text-fill-color: transparent !important;
+}
+
+body.privacy-glasses.blur-ui .hover-editor .popover-title:hover {
+	text-shadow: none !important;
+	-webkit-text-fill-color: unset !important;
+}
+
 /*****************************************************************/
 /**  BLOCK CONTENT IN PREVIEW MODE								**/
 /*****************************************************************/

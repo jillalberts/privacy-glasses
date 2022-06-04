@@ -125,6 +125,8 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 ### 🕰 Release History
 
+- 2022-06-04: Version 0.5.2
+        - Fixed an error in the deployment of 0.5.1.
 - 2022-05-26: Version 0.5.1
 	- Added support for blurring the UI of the "Quick Explorer" plugin, thanks to @leoccyao
 - 2022-05-18: Version 0.5.0

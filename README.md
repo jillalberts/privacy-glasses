@@ -8,9 +8,9 @@ https://github.com/jillalberts/privacy-glasses
 
 ---
 
-# Important note:
+# note:
 
-### I am no longer working on this project very actively, but the code is open-source and distributed under the MIT license, so anyone who wants to fix or improve anything is free to submit pull requests (or fork the project and do pretty much whatever they'd like!).
+### I am no longer working on this project very actively, but the code is open-source and distributed under the MIT license, so anyone who wants to fix or improve anything is free to submit pull requests (or even fork the project!).
 
 ---
 

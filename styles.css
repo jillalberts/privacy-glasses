@@ -10,13 +10,15 @@
 
 /* blur content */
 body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line span,
-body.privacy-glasses.blur-edit .markdown-source-view div.cm-line {
+body.privacy-glasses.blur-edit .markdown-source-view div.cm-line,
+body.privacy-glasses.blur-edit .markdown-source-view div.cm-embed-block {
     text-shadow: 0 0 var(--blurLevel) currentColor !important;
 	-webkit-text-fill-color: transparent !important;
 }
 /* unblur on hover */
 body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line:hover span,
-body.privacy-glasses.blur-edit .markdown-source-view div.cm-line:hover {
+body.privacy-glasses.blur-edit .markdown-source-view div.cm-line:hover,
+body.privacy-glasses.blur-edit .markdown-source-view div.cm-embed-block:hover {
     text-shadow: none !important;
 	-webkit-text-fill-color: unset !important;
 }

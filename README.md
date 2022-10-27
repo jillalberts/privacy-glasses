@@ -125,6 +125,8 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 ### 🕰 Release History
 
+- 2022-10-27: Version 0.5.3
+	- Added blurring of markdown code blocks thanks to @leoccyao
 - 2022-06-04: Version 0.5.2
         - Fixed an error in the deployment of 0.5.1.
 - 2022-05-26: Version 0.5.1

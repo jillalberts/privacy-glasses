@@ -16,9 +16,9 @@ body.privacy-glasses.blur-edit .markdown-source-view div.cm-embed-block {
 	-webkit-text-fill-color: transparent !important;
 }
 /* unblur on hover */
-body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line:hover span,
-body.privacy-glasses.blur-edit .markdown-source-view div.cm-line:hover,
-body.privacy-glasses.blur-edit .markdown-source-view div.cm-embed-block:hover {
+body.privacy-glasses.blur-edit.reveal-on-hover .markdown-source-view pre.CodeMirror-line:hover span,
+body.privacy-glasses.blur-edit.reveal-on-hover .markdown-source-view div.cm-line:hover,
+body.privacy-glasses.blur-edit.reveal-on-hover .markdown-source-view div.cm-embed-block:hover {
     text-shadow: none !important;
 	-webkit-text-fill-color: unset !important;
 }
@@ -31,8 +31,8 @@ body.privacy-glasses.blur-edit .markdown-source-view div.cm-line span.cm-strong 
     background-image: none !important;
     -webkit-text-fill-color: transparent;
 } 
-body.privacy-glasses.blur-edit .markdown-source-view pre.CodeMirror-line:hover span.cm-strong,
-body.privacy-glasses.blur-edit .markdown-source-view div.cm-line:hover span.cm-strong {
+body.privacy-glasses.blur-edit.reveal-on-hover .markdown-source-view pre.CodeMirror-line:hover span.cm-strong,
+body.privacy-glasses.blur-edit.reveal-on-hover .markdown-source-view div.cm-line:hover span.cm-strong {
 	 text-shadow: none !important;
      -webkit-text-fill-color: unset;
 } 
@@ -43,7 +43,7 @@ body.privacy-glasses.blur-edit .workspace-leaf-content[data-mode="source"]  .vie
 	-webkit-text-fill-color: transparent !important;
 }
  /* unblur filename in header */
- body.privacy-glasses.blur-edit .workspace-leaf-content[data-mode="source"] .view-header-title:hover {
+ body.privacy-glasses.blur-edit.reveal-on-hover .workspace-leaf-content[data-mode="source"] .view-header-title:hover {
 	text-shadow: none !important;
 	-webkit-text-fill-color: unset !important;
 }
@@ -59,8 +59,8 @@ body.privacy-glasses.blur-preview .markdown-preview-section div pre code {
 	-webkit-text-fill-color: transparent !important;
 }
  /* unblur on hover */
-body.privacy-glasses.blur-preview .markdown-preview-section div > *:hover,
-body.privacy-glasses.blur-preview .markdown-preview-section div pre:hover code {
+body.privacy-glasses.blur-preview.reveal-on-hover .markdown-preview-section div > *:hover,
+body.privacy-glasses.blur-preview.reveal-on-hover .markdown-preview-section div pre:hover code {
     text-shadow: none !important;
 	-webkit-text-fill-color: unset !important;
 }
@@ -71,18 +71,18 @@ body.privacy-glasses.blur-preview .markdown-preview-section div svg {
     filter: blur(calc(var(--blurLevel)*3)) !important;
  }
  /* unblur images on hover */
-body.privacy-glasses.blur-preview .markdown-preview-section div img:hover,
-body.privacy-glasses.blur-preview .markdown-preview-section div svg:hover {
+body.privacy-glasses.blur-preview.reveal-on-hover .markdown-preview-section div img:hover,
+body.privacy-glasses.blur-preview.reveal-on-hover .markdown-preview-section div svg:hover {
     filter: none !important;
 }
 
 /* BLUR FILENAME HEADER */
-body.privacy-glasses.blur-preview .workspace-leaf-content[data-mode="preview"]  .view-header-title {
+body.privacy-glasses.blur-preview .workspace-leaf-content[data-mode="preview"] .view-header-title {
 	text-shadow: 0 0 var(--blurLevel) currentColor !important;
 	-webkit-text-fill-color: transparent !important;
 }
 /* unblur filename in header */
-body.privacy-glasses.blur-preview .workspace-leaf-content[data-mode="preview"] .view-header-title:hover {
+body.privacy-glasses.blur-preview.reveal-on-hover .workspace-leaf-content[data-mode="preview"] .view-header-title:hover {
 	text-shadow: none !important;
 	-webkit-text-fill-color: unset !important;
 }
@@ -96,8 +96,8 @@ body.privacy-glasses.blur-ui .workspace-drawer div {
 	-webkit-text-fill-color: transparent !important;
 }
 /* unblur on hover */
-body.privacy-glasses.blur-ui .workspace-tabs div:hover,
-body.privacy-glasses.blur-ui .workspace-drawer div:hover {
+body.privacy-glasses.blur-ui.reveal-on-hover .workspace-tabs div:hover,
+body.privacy-glasses.blur-ui.reveal-on-hover .workspace-drawer div:hover {
 	text-shadow: none !important;
 	-webkit-text-fill-color: unset !important;
 }
@@ -109,7 +109,7 @@ body.privacy-glasses.blur-ui .titlebar #quick-explorer {
 	-webkit-text-fill-color: transparent !important;
 }
 
-body.privacy-glasses.blur-ui .titlebar #quick-explorer:hover {
+body.privacy-glasses.blur-ui.reveal-on-hover .titlebar #quick-explorer:hover {
 	text-shadow: none !important;
 	-webkit-text-fill-color: unset !important;
 }
@@ -121,7 +121,7 @@ body.privacy-glasses.blur-ui .hover-editor .popover-title {
 	-webkit-text-fill-color: transparent !important;
 }
 
-body.privacy-glasses.blur-ui .hover-editor .popover-title:hover {
+body.privacy-glasses.blur-ui.reveal-on-hover .hover-editor .popover-title:hover {
 	text-shadow: none !important;
 	-webkit-text-fill-color: unset !important;
 }
@@ -152,23 +152,23 @@ body.privacy-glasses.block-preview .markdown-preview-section div svg {
 	text-shadow: none !important;
 }
 
- body.privacy-glasses.block-preview .markdown-preview-section div:hover h1,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover h2,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover h3,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover h4,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover h5,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover h6,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover a,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover em,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover strong,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover li,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover del,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover mark,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover code,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover p,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover th,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover td,
- body.privacy-glasses.block-preview .markdown-preview-section div:hover svg {
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover h1,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover h2,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover h3,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover h4,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover h5,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover h6,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover a,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover em,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover strong,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover li,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover del,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover mark,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover code,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover p,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover th,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover td,
+ body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section div:hover svg {
 	background-color: transparent !important;
 }
 
@@ -176,7 +176,7 @@ body.privacy-glasses.block-preview .markdown-preview-section .MathJax {
 	background-color: currentColor !important;
 	text-shadow: none !important;
 }
-body.privacy-glasses.block-preview .markdown-preview-section .MathJax:hover {
+body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section .MathJax:hover {
 	background-color: transparent !important;
 }
 
@@ -186,8 +186,8 @@ body.privacy-glasses.block-preview .markdown-preview-section svg {
 	filter:contrast(0) !important;
 }
 
-body.privacy-glasses.block-preview .markdown-preview-section img:hover,
-body.privacy-glasses.block-preview .markdown-preview-section svg:hover {
+body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section img:hover,
+body.privacy-glasses.block-preview.reveal-on-hover .markdown-preview-section svg:hover {
 	filter: none !important;
 }
 
@@ -198,7 +198,7 @@ body.privacy-glasses.block-preview .workspace-leaf-content[data-mode="preview"] 
 	display: inline !important;
 }
 /* unblock filename in header on hover */
-body.privacy-glasses.block-preview .workspace-leaf-content[data-mode="preview"] .view-header-title:hover {
+body.privacy-glasses.block-preview.reveal-on-hover .workspace-leaf-content[data-mode="preview"] .view-header-title:hover {
 	background-color: transparent !important;
 }
 
@@ -213,8 +213,8 @@ body.privacy-glasses.block-edit .markdown-source-view div.cm-line {
 	text-shadow: none !important; /*needed for e.g. Obsidianite theme */
 }
 /* unblock normal text */
-body.privacy-glasses.block-edit .markdown-source-view pre.CodeMirror-line:hover span,
-body.privacy-glasses.block-edit .markdown-source-view div.cm-line:hover {
+body.privacy-glasses.block-edit.reveal-on-hover .markdown-source-view pre.CodeMirror-line:hover span,
+body.privacy-glasses.block-edit.reveal-on-hover .markdown-source-view div.cm-line:hover {
 	background-color: transparent !important;
 }
 
@@ -225,7 +225,7 @@ body.privacy-glasses.block-edit .workspace-leaf-content[data-mode="source"] .vie
 	display: inline !important;
 }
 /* unblock filename in header on hover */
-body.privacy-glasses.block-edit .workspace-leaf-content[data-mode="source"] .view-header-title:hover {
+body.privacy-glasses.block-edit.reveal-on-hover .workspace-leaf-content[data-mode="source"] .view-header-title:hover {
 	background-color: transparent !important;
 }
 
@@ -251,18 +251,18 @@ body.privacy-glasses.block-ui .search-input-container input {
 }
 
 /* unblock left filenav content */
-body.privacy-glasses.block-ui .nav-file-title:hover .nav-file-title-content,
-body.privacy-glasses.block-ui .nav-folder-title:hover .nav-folder-title-content,
+body.privacy-glasses.block-ui.reveal-on-hover .nav-file-title:hover .nav-file-title-content,
+body.privacy-glasses.block-ui.reveal-on-hover .nav-folder-title:hover .nav-folder-title-content,
 /* unblock outline, etc on hover */
-body.privacy-glasses.block-ui .tree-item-inner:hover,
+body.privacy-glasses.block-ui.reveal-on-hover .tree-item-inner:hover,
 /* unblock search results */
-body.privacy-glasses.block-ui .search-result-file-match:hover,
-body.privacy-glasses.block-ui .search-info-container:hover,
-body.privacy-glasses.block-ui .search-empty-state:hover,
+body.privacy-glasses.block-ui.reveal-on-hover .search-result-file-match:hover,
+body.privacy-glasses.block-ui.reveal-on-hover .search-info-container:hover,
+body.privacy-glasses.block-ui.reveal-on-hover .search-empty-state:hover,
 /* unblock highlighted phrase of search results */
-body.privacy-glasses.block-ui .search-result-file-match:hover .search-result-file-matched-text,
+body.privacy-glasses.block-ui.reveal-on-hover .search-result-file-match:hover .search-result-file-matched-text,
 /* unblock searchbox input */
-body.privacy-glasses.block-ui .search-input-container:hover input
+body.privacy-glasses.block-ui.reveal-on-hover .search-input-container:hover input
 {
    background-color: transparent !important;
 }
@@ -275,7 +275,7 @@ body.privacy-glasses.circles-preview .markdown-preview-section div {
 	-webkit-text-security: disc !important;
 	text-shadow: none !important;
 }
-body.privacy-glasses.circles-preview .markdown-preview-section div:hover {
+body.privacy-glasses.circles-preview.reveal-on-hover .markdown-preview-section div:hover {
 	-webkit-text-security: none !important;
 }
 
@@ -285,8 +285,8 @@ body.privacy-glasses.circles-preview .markdown-preview-section svg {
 	 filter:contrast(0) !important;
 }
 /* unblock images on hover */
-body.privacy-glasses.circles-preview .markdown-preview-section img:hover,
-body.privacy-glasses.circles-preview .markdown-preview-section svg:hover {
+body.privacy-glasses.circles-preview.reveal-on-hover .markdown-preview-section img:hover,
+body.privacy-glasses.circles-preview.reveal-on-hover .markdown-preview-section svg:hover {
 	 filter: none !important;
 }
 
@@ -296,7 +296,7 @@ body.privacy-glasses.circles-preview .workspace-leaf-content[data-mode="preview"
 	text-shadow: none !important;
 }
 /* uncircle filename in header on hover */
-body.privacy-glasses.circles-preview .workspace-leaf-content[data-mode="preview"] .view-header-title:hover {
+body.privacy-glasses.circles-preview.reveal-on-hover .workspace-leaf-content[data-mode="preview"] .view-header-title:hover {
 	-webkit-text-security: none !important;
 }
 
@@ -316,8 +316,8 @@ body.privacy-glasses.circles-edit .markdown-source-view pre.CodeMirror-line span
  and not very distinguishable from non-empty lines */ {
 	-webkit-text-security: none !important;
 }
-body.privacy-glasses.circles-edit .markdown-source-view pre.CodeMirror-line:hover span,
-body.privacy-glasses.circles-edit .markdown-source-view div.cm-line:hover {
+body.privacy-glasses.circles-edit.reveal-on-hover .markdown-source-view pre.CodeMirror-line:hover span,
+body.privacy-glasses.circles-edit.reveal-on-hover .markdown-source-view div.cm-line:hover {
 	-webkit-text-security: none !important;
 }
 
@@ -327,7 +327,7 @@ body.privacy-glasses.circles-edit .workspace-leaf-content[data-mode="source"] .v
 	text-shadow: none !important;
 }
 /* uncircle filename in header on hover */
-body.privacy-glasses.circles-edit .workspace-leaf-content[data-mode="source"] .view-header-title:hover {
+body.privacy-glasses.circles-edit.reveal-on-hover .workspace-leaf-content[data-mode="source"] .view-header-title:hover {
 	-webkit-text-security: none !important;
 }
 
@@ -352,18 +352,18 @@ body.privacy-glasses.circles-ui .search-input-container input {
 }
 
 /* uncircles left filenav content */
-body.privacy-glasses.circles-ui .nav-file-title:hover .nav-file-title-content,
-body.privacy-glasses.circles-ui .nav-folder-title:hover .nav-folder-title-content,
+body.privacy-glasses.circles-ui.reveal-on-hover .nav-file-title:hover .nav-file-title-content,
+body.privacy-glasses.circles-ui.reveal-on-hover .nav-folder-title:hover .nav-folder-title-content,
 /* uncircles outline, etc on hover */
-body.privacy-glasses.circles-ui .tree-item-inner:hover,
+body.privacy-glasses.circles-ui.reveal-on-hover .tree-item-inner:hover,
 /* uncircles search results */
-body.privacy-glasses.circles-ui .search-result-file-match:hover,
-body.privacy-glasses.circles-ui .search-info-container:hover,
-body.privacy-glasses.circles-ui .search-empty-state:hover,
+body.privacy-glasses.circles-ui.reveal-on-hover .search-result-file-match:hover,
+body.privacy-glasses.circles-ui.reveal-on-hover .search-info-container:hover,
+body.privacy-glasses.circles-ui.reveal-on-hover .search-empty-state:hover,
 /* uncircles highlighted phrase of search results */
-body.privacy-glasses.circles-ui .search-result-file-match:hover .search-result-file-matched-text,
+body.privacy-glasses.circles-ui.reveal-on-hover .search-result-file-match:hover .search-result-file-matched-text,
 /* uncircles searchbox input */
-body.privacy-glasses.circles-ui .search-input-container:hover input
+body.privacy-glasses.circles-ui.reveal-on-hover .search-input-container:hover input
 {
 	-webkit-text-security: none !important;
 }

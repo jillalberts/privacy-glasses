@@ -153,6 +153,9 @@ export default class PrivacyGlassesPlugin extends Plugin {
 			this.updateBlurLevelEl();
 
 			document.body.classList.add('privacy-glasses');
+			if (this.settings.hoverToReveal) {
+				document.body.classList.add('reveal-on-hover');
+			}
 
 			if (this.settings.uiBlurMethod == 'blurUI') {document.body.classList.add('blur-ui');}
 			if (this.settings.uiBlurMethod == 'blockUI') {document.body.classList.add('block-ui');}
@@ -199,7 +202,8 @@ export default class PrivacyGlassesPlugin extends Plugin {
 									'circles-edit',
 									'blur-preview',
 									'block-preview',
-									'circles-preview'
+									'circles-preview',
+									'reveal-on-hover'
 								 );
 	}
 }
@@ -212,6 +216,7 @@ interface PrivacyGlassesSettings {
 	previewBlurMethod: string;
 	uiBlurMethod: string;
 	blurOnIdleTimeoutSeconds: number;
+	hoverToReveal: boolean;
 }
 
 const DEFAULT_SETTINGS: PrivacyGlassesSettings = {
@@ -221,7 +226,8 @@ const DEFAULT_SETTINGS: PrivacyGlassesSettings = {
 	editBlurMethod: 'blurEdit',
 	previewBlurMethod: 'blurPreview',
 	uiBlurMethod: 'blurUI',
-	blurOnIdleTimeoutSeconds: -1
+	blurOnIdleTimeoutSeconds: -1,
+	hoverToReveal: true
 }
 
 class privacyGlassesSettingTab extends PluginSettingTab {
@@ -284,6 +290,17 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				});
 			  });
+
+		new Setting(containerEl)
+			.setName('Hover To Reveal')
+			.setDesc('Indicates whether or not to reveal text when hovering the cursor over it.')
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.hoverToReveal);
+				toggle.onChange(async (value) => {
+					this.plugin.settings.hoverToReveal = value;
+					await this.plugin.refresh(true);
+				});
+			});
      
 
 		var sliderEl = new Setting(containerEl);

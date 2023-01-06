@@ -36,8 +36,11 @@ export default class PrivacyGlassesPlugin extends Plugin {
 			}
 		});
 
-		this.privacyGlasses = true;	// we do not want to automatically activate the plugin upon vault open or initial plugin activation, 
-									// so we temporarily set it to true just until it quickly gets flipped to false in toggleGlasses() on the next line
+
+		// toggleGlasses() below will do actual plugin activation. 
+		// set privacyGlasses field to trick it into either blurring the content or not
+		// (since toggleGlasses flips the state, we need to set it to the opposite of blurOnStartup)
+		this.privacyGlasses = !this.settings.blurOnStartup;	
 		await this.toggleGlasses(true); // flips this.privacyGlasses to false and updates statusbar. 'true' means do toggle quietly (do not display a Notice)
 	}
 
@@ -150,6 +153,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
 }
 
 interface PrivacyGlassesSettings {
+	blurOnStartup: boolean;
 	privacyGlasses: boolean;
 	blurLevel: number;
 	editBlurMethod: string;
@@ -158,6 +162,7 @@ interface PrivacyGlassesSettings {
 }
 
 const DEFAULT_SETTINGS: PrivacyGlassesSettings = {
+	blurOnStartup: false,
 	privacyGlasses: false,
 	blurLevel: 0.6,
 	editBlurMethod: 'blurEdit',
@@ -194,6 +199,17 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 				toggle.setValue(this.plugin.privacyGlasses);
 				toggle.onChange(async (value) => {
 					await this.plugin.toggleGlasses();
+				});
+			});
+
+		new Setting(containerEl)
+			.setName('Activate Privacy Glasses on startup')
+			.setDesc('Indicates whether or not the pluigin will be automatically activated when starting obsidian.')
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.blurOnStartup);
+				toggle.onChange(async (value) => {
+					this.plugin.settings.blurOnStartup = value;
+					await this.plugin.saveSettings();
 				});
 			});
 

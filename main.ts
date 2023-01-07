@@ -13,6 +13,9 @@ export default class PrivacyGlassesPlugin extends Plugin {
 	noticeMsg: Notice;
 	blurLevelStyleEl: HTMLElement;
 	privacyGlasses: boolean = false;
+	rootRegistered: boolean = false;
+	lastEventTime: number | undefined;
+
 
 	async onload() {
         		
@@ -36,9 +39,61 @@ export default class PrivacyGlassesPlugin extends Plugin {
 			}
 		});
 
-		this.privacyGlasses = true;	// we do not want to automatically activate the plugin upon vault open or initial plugin activation, 
-									// so we temporarily set it to true just until it quickly gets flipped to false in toggleGlasses() on the next line
+
+		// toggleGlasses() below will do actual plugin activation. 
+		// set privacyGlasses field to trick it into either blurring the content or not
+		// (since toggleGlasses flips the state, we need to set it to the opposite of blurOnStartup)
+		this.privacyGlasses = !this.settings.blurOnStartup;	
 		await this.toggleGlasses(true); // flips this.privacyGlasses to false and updates statusbar. 'true' means do toggle quietly (do not display a Notice)
+
+		this.registerInterval(window.setInterval(() => {
+			this.checkIdleTimeout();
+		}, 1000));
+
+		this.app.workspace.on('window-open', (win) => {
+			this.registerDomActivityEvents(win.win);
+		});
+
+		this.lastEventTime = performance.now();
+	}
+
+
+	registerDomActivityEvents(win: Window) {
+		this.registerDomEvent(win, "mousedown", e => {
+			this.lastEventTime = e.timeStamp;
+		});
+		this.registerDomEvent(win, "keydown", e => {
+			this.lastEventTime = e.timeStamp;
+		});
+	}
+
+	checkIdleTimeout() {
+
+		// this would be better be placed in onload, however, this.app.workspace.rootSplit.win is null at that time
+		if (!this.rootRegistered) {
+			if (this.app.workspace.rootSplit) {
+				this.registerDomActivityEvents(this.app.workspace.rootSplit.win);
+				this.rootRegistered = true;
+			}
+		}
+
+		if (this.settings.blurOnIdleTimeoutSeconds < 0) {
+			return;
+		}
+
+		if (this.privacyGlasses) {
+			return;
+		}
+
+		if (!this.lastEventTime){
+			return;
+		}
+
+		const now = performance.now();
+
+		if ((now - this.lastEventTime) / 1000 >= this.settings.blurOnIdleTimeoutSeconds) {
+			this.toggleGlasses();
+		}
 	}
 
 	async toggleGlasses(quiet: boolean = false) {
@@ -98,6 +153,9 @@ export default class PrivacyGlassesPlugin extends Plugin {
 			this.updateBlurLevelEl();
 
 			document.body.classList.add('privacy-glasses');
+			if (this.settings.hoverToReveal) {
+				document.body.classList.add('reveal-on-hover');
+			}
 
 			if (this.settings.uiBlurMethod == 'blurUI') {document.body.classList.add('blur-ui');}
 			if (this.settings.uiBlurMethod == 'blockUI') {document.body.classList.add('block-ui');}
@@ -144,25 +202,32 @@ export default class PrivacyGlassesPlugin extends Plugin {
 									'circles-edit',
 									'blur-preview',
 									'block-preview',
-									'circles-preview'
+									'circles-preview',
+									'reveal-on-hover'
 								 );
 	}
 }
 
 interface PrivacyGlassesSettings {
+	blurOnStartup: boolean;
 	privacyGlasses: boolean;
 	blurLevel: number;
 	editBlurMethod: string;
 	previewBlurMethod: string;
 	uiBlurMethod: string;
+	blurOnIdleTimeoutSeconds: number;
+	hoverToReveal: boolean;
 }
 
 const DEFAULT_SETTINGS: PrivacyGlassesSettings = {
+	blurOnStartup: false,
 	privacyGlasses: false,
 	blurLevel: 0.6,
 	editBlurMethod: 'blurEdit',
 	previewBlurMethod: 'blurPreview',
-	uiBlurMethod: 'blurUI'
+	uiBlurMethod: 'blurUI',
+	blurOnIdleTimeoutSeconds: -1,
+	hoverToReveal: true
 }
 
 class privacyGlassesSettingTab extends PluginSettingTab {
@@ -196,6 +261,47 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 					await this.plugin.toggleGlasses();
 				});
 			});
+
+		new Setting(containerEl)
+			.setName('Activate Privacy Glasses on startup')
+			.setDesc('Indicates whether or not the pluigin will be automatically activated when starting obsidian.')
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.blurOnStartup);
+				toggle.onChange(async (value) => {
+					this.plugin.settings.blurOnStartup = value;
+					await this.plugin.saveSettings();
+				});
+			});
+
+		new Setting(containerEl)
+			.setName('Activate Privacy Glasses after user inactivity')
+			.setDesc('Inactivity time after which Privace Glasses will be automatically activated. -1 to never activate automatically.')
+			.addText((textfield) => {
+				textfield.setPlaceholder("-1");
+				textfield.inputEl.type = "number";
+				textfield.inputEl.min = "-1";
+				textfield.setValue(String(this.plugin.settings.blurOnIdleTimeoutSeconds));
+				textfield.onChange(async (value) => {
+					let parsed = parseFloat(value);
+					if (isNaN(parsed)){
+						parsed = -1;
+					}
+					this.plugin.settings.blurOnIdleTimeoutSeconds = parsed;
+					await this.plugin.saveSettings();
+				});
+			  });
+
+		new Setting(containerEl)
+			.setName('Hover To Reveal')
+			.setDesc('Indicates whether or not to reveal text when hovering the cursor over it.')
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.hoverToReveal);
+				toggle.onChange(async (value) => {
+					this.plugin.settings.hoverToReveal = value;
+					await this.plugin.refresh(true);
+				});
+			});
+     
 
 		var sliderEl = new Setting(containerEl);
 		let sliderElDesc = 'Higher is blurrier. Default=60, current=';

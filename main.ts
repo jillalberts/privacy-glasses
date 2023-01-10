@@ -152,22 +152,10 @@ export default class PrivacyGlassesPlugin extends Plugin {
 
 			this.updateBlurLevelEl();
 
-			document.body.classList.add('privacy-glasses');
+			document.body.classList.add('privacy-glasses-blur');
 			if (this.settings.hoverToReveal) {
-				document.body.classList.add('reveal-on-hover');
+				document.body.classList.add('privacy-glasses-reveal-on-hover');
 			}
-
-			if (this.settings.uiBlurMethod == 'blurUI') {document.body.classList.add('blur-ui');}
-			if (this.settings.uiBlurMethod == 'blockUI') {document.body.classList.add('block-ui');}
-			if (this.settings.uiBlurMethod == 'circlesUI') {document.body.classList.add('circles-ui');}
-
-			if (this.settings.editBlurMethod == 'blurEdit') {document.body.classList.add('blur-edit');}
-			if (this.settings.editBlurMethod == 'blockEdit') {document.body.classList.add('block-edit');}
-			if (this.settings.editBlurMethod == 'circlesEdit') {document.body.classList.add('circles-edit');}
-
-			if (this.settings.previewBlurMethod == 'blurPreview') {document.body.classList.add('blur-preview');}
-			if (this.settings.previewBlurMethod == 'blockPreview') {document.body.classList.add('block-preview');}
-			if (this.settings.previewBlurMethod == 'circlesPreview') {document.body.classList.add('circles-preview');}
 		}
 	}	
 
@@ -193,17 +181,8 @@ export default class PrivacyGlassesPlugin extends Plugin {
 	
 	removeCssClasses() {
 
-		document.body.removeClass(	'privacy-glasses',
-									'blur-ui',
-									'block-ui',
-									'circles-ui',
-									'blur-edit',
-									'block-edit',
-									'circles-edit',
-									'blur-preview',
-									'block-preview',
-									'circles-preview',
-									'reveal-on-hover'
+		document.body.removeClass(	'privacy-glasses-blur',
+									'privacy-glasses-reveal-on-hover'
 								 );
 	}
 }
@@ -212,9 +191,6 @@ interface PrivacyGlassesSettings {
 	blurOnStartup: boolean;
 	privacyGlasses: boolean;
 	blurLevel: number;
-	editBlurMethod: string;
-	previewBlurMethod: string;
-	uiBlurMethod: string;
 	blurOnIdleTimeoutSeconds: number;
 	hoverToReveal: boolean;
 }
@@ -222,10 +198,7 @@ interface PrivacyGlassesSettings {
 const DEFAULT_SETTINGS: PrivacyGlassesSettings = {
 	blurOnStartup: false,
 	privacyGlasses: false,
-	blurLevel: 0.6,
-	editBlurMethod: 'blurEdit',
-	previewBlurMethod: 'blurPreview',
-	uiBlurMethod: 'blurUI',
+	blurLevel: 0.3,
 	blurOnIdleTimeoutSeconds: -1,
 	hoverToReveal: true
 }
@@ -318,48 +291,6 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 					await this.plugin.refresh(true);
 				})
 			);
-
-		new Setting(containerEl)
-			.setName('Obfuscation method for Edit Mode')
-			.setDesc('How to obfuscate the document\'s text in Edit Mode')
-			.addDropdown(dropdown => dropdown
-				.addOption('','[Off]')
-				.addOption('blurEdit','Blurry Text')
-				.addOption('blockEdit','Solid Blocks')
-				.addOption('circlesEdit','Circles ⚠️')
-				.setValue(this.plugin.settings.editBlurMethod)
-			.onChange(async (value) => {
-				this.plugin.settings.editBlurMethod = value;
-				await this.plugin.refresh(true);
-			}));
-
-		new Setting(containerEl)
-		.setName('Obfuscation method for Preview Mode')
-		.setDesc('How to obfuscate the document\'s text in Preview Mode')
-		.addDropdown(dropdown => dropdown
-			.addOption('','[Off]')
-			.addOption('blurPreview','Blurry Text')
-			.addOption('blockPreview','Solid Blocks ⚠️')
-			.addOption('circlesPreview','Circles ⚠️')
-			.setValue(this.plugin.settings.previewBlurMethod)
-		.onChange(async (value) => {
-			this.plugin.settings.previewBlurMethod = value;
-			await this.plugin.refresh(true);
-		}));
-
-		new Setting(containerEl)
-			.setName('Obfuscation method for Sidebars')
-			.setDesc('How to obfuscate your file list, tags, outline, etc in Obsidian\'s sidebars')
-			.addDropdown(dropdown => dropdown
-				.addOption('','[Off]')
-				.addOption('blurUI','Blurry Text')
-				.addOption('blockUI','Solid Blocks')
-				.addOption('circlesUI','Circles')
-				.setValue(this.plugin.settings.uiBlurMethod)
-			.onChange(async (value) => {
-				this.plugin.settings.uiBlurMethod = value;
-				await this.plugin.refresh(true);
-		}));  
 	}
   }
 

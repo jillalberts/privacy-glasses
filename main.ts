@@ -13,7 +13,6 @@ export default class PrivacyGlassesPlugin extends Plugin {
 	noticeMsg: Notice;
 	blurLevelStyleEl: HTMLElement;
 	privacyGlasses: boolean = false;
-	rootRegistered: boolean = false;
 	lastEventTime: number | undefined;
 
 
@@ -26,7 +25,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
 		this.addSettingTab(new privacyGlassesSettingTab(this.app, this));
 
 		addIcon('glasses', privacyGlassesIcon);
-		
+
 		this.addRibbonIcon('glasses', 'Toggle Privacy Glasses', () => {
 			this.toggleGlasses();
 		});
@@ -50,6 +49,10 @@ export default class PrivacyGlassesPlugin extends Plugin {
 			this.checkIdleTimeout();
 		}, 1000));
 
+		this.app.workspace.onLayoutReady(() => {
+			this.registerDomActivityEvents(this.app.workspace.rootSplit.win);
+		})
+
 		this.app.workspace.on('window-open', (win) => {
 			this.registerDomActivityEvents(win.win);
 		});
@@ -68,14 +71,6 @@ export default class PrivacyGlassesPlugin extends Plugin {
 	}
 
 	checkIdleTimeout() {
-
-		// this would be better be placed in onload, however, this.app.workspace.rootSplit.win is null at that time
-		if (!this.rootRegistered) {
-			if (this.app.workspace.rootSplit) {
-				this.registerDomActivityEvents(this.app.workspace.rootSplit.win);
-				this.rootRegistered = true;
-			}
-		}
 
 		if (this.settings.blurOnIdleTimeoutSeconds < 0) {
 			return;
@@ -193,6 +188,7 @@ interface PrivacyGlassesSettings {
 	blurLevel: number;
 	blurOnIdleTimeoutSeconds: number;
 	hoverToReveal: boolean;
+	privateDirs: string;
 }
 
 const DEFAULT_SETTINGS: PrivacyGlassesSettings = {
@@ -200,7 +196,8 @@ const DEFAULT_SETTINGS: PrivacyGlassesSettings = {
 	privacyGlasses: false,
 	blurLevel: 0.3,
 	blurOnIdleTimeoutSeconds: -1,
-	hoverToReveal: true
+	hoverToReveal: true,
+	privateDirs: ''
 }
 
 class privacyGlassesSettingTab extends PluginSettingTab {
@@ -289,6 +286,18 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 					this.plugin.settings.blurLevel = value;
 					sliderEl.setDesc(sliderElDesc + Math.round(this.plugin.settings.blurLevel*100));
 					await this.plugin.refresh(true);
+				})
+			);
+
+		new Setting(containerEl)
+			.setName('Locations with increased privacy')
+			.setDesc('Comma-separated list of directories, files in which are blurred in semi-private mode')
+			.addText(text => text
+				.setPlaceholder('finance,therapy')
+				.setValue(this.plugin.settings.privateDirs)
+				.onChange(async (value) => {
+				this.plugin.settings.privateDirs = value;
+				await this.plugin.saveSettings();
 				})
 			);
 	}

@@ -4,12 +4,14 @@
 	Licensed under the MIT License (http://opensource.org/licenses/MIT) 
 */
 
-import { App, Plugin, PluginSettingTab, Setting, addIcon, ToggleComponent, Notice, MarkdownView, MarkdownFileInfo, Editor, View} from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, addIcon, Notice, MarkdownFileInfo, View} from 'obsidian';
 
 function isMarkdownFileInfoView(x: unknown):x is MarkdownFileInfo {
 	const anyX = x as any;
 	return !!Object.getOwnPropertyDescriptor(anyX, 'file')
-} 
+}
+
+type Level = 'hide-all' | 'hide-private' | 'reveal-all'
 
 export default class PrivacyGlassesPlugin extends Plugin {
 
@@ -18,7 +20,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
 	noticeMsg: Notice;
 	blurLevelStyleEl: HTMLElement;
 	lastEventTime: number | undefined;
-	currentLevel: 'hide-all' | 'hide-private' | 'reveal-all';
+	currentLevel: Level;
 
 	async onload() {
         		
@@ -28,30 +30,50 @@ export default class PrivacyGlassesPlugin extends Plugin {
 
 		this.addSettingTab(new privacyGlassesSettingTab(this.app, this));
 
-		addIcon('glasses', privacyGlassesIcon);
+		addIcon('eye', eyeIcon);
+		addIcon('eye-closed', eyeClosedIcon);
+		addIcon('eye-slash', eyeSlashIcon);
 
-		this.addRibbonIcon('glasses', 'Hide all', () => {
+		this.addRibbonIcon('eye-closed', 'Hide all', () => {
 			this.currentLevel = 'hide-all';
 			this.updateLeavesAndGlobalReveals();
 		});
-		this.addRibbonIcon('glasses', 'Reveal non-private', () => {
+		this.addRibbonIcon('eye-slash', 'Reveal non-private', () => {
 			this.currentLevel = 'hide-private';
 			this.updateLeavesAndGlobalReveals();
 		});
-		this.addRibbonIcon('glasses', 'Reveal all', () => {
+		this.addRibbonIcon('eye', 'Reveal all', () => {
 			this.currentLevel = 'reveal-all';
 			this.updateLeavesAndGlobalReveals();
 		});
 
 
-		// todo: multiple levels
-		// this.addCommand({
-		// 	id: 'toggle-privacy-glasses', 
-		// 	name: 'Toggle Privacy Glasses',
-		// 	callback: () => {
-		// 		this.toggleGlasses();
-		// 	}
-		// });
+		this.addCommand({
+			id: 'privacy-glasses-hide-all', 
+			name: 'Privacy Glasses - hide all',
+			callback: () => {
+				this.currentLevel = 'hide-all';
+				this.updateLeavesAndGlobalReveals();
+			}
+		});
+
+		this.addCommand({
+			id: 'privacy-glasses-hide-private', 
+			name: 'Privacy Glasses - hide files in folders marked as private',
+			callback: () => {
+				this.currentLevel = 'hide-private';
+				this.updateLeavesAndGlobalReveals();
+			}
+		});
+
+		this.addCommand({
+			id: 'privacy-glasses-reveal-all', 
+			name: 'Privacy Glasses - do not hide anything',
+			callback: () => {
+				this.currentLevel = 'reveal-all';
+				this.updateLeavesAndGlobalReveals();
+			}
+		});
 
 		this.registerInterval(window.setInterval(() => {
 			this.checkIdleTimeout();
@@ -142,11 +164,15 @@ export default class PrivacyGlassesPlugin extends Plugin {
 	}
 
 	shouldRevealLeaf(view: View) {
-		if (this.currentLevel === 'reveal-all' || this.currentLevel === 'hide-all') {
+		if (this.currentLevel === 'reveal-all') {
 			return true;
 		}
 
-		if (!isMarkdownFileInfoView(view)){
+		if (this.currentLevel === 'hide-all') { 
+			return false;
+		}
+
+		if (!isMarkdownFileInfoView(view)) {
 			return true;
 		}
 
@@ -186,9 +212,9 @@ export default class PrivacyGlassesPlugin extends Plugin {
 		);
 		if (this.currentLevel === 'hide-all') {
 			document.body.classList.add('privacy-glasses-blur');
-			if (this.settings.hoverToReveal) {
-				document.body.classList.add('privacy-glasses-reveal-on-hover');
-			}
+		}
+		if (this.settings.hoverToReveal) {
+			document.body.classList.add('privacy-glasses-reveal-on-hover');
 		}
 	}
 
@@ -208,7 +234,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
 }
 
 interface PrivacyGlassesSettings {
-	blurOnStartup: boolean;
+	blurOnStartup: Level;
 	privacyGlasses: boolean;
 	blurLevel: number;
 	blurOnIdleTimeoutSeconds: number;
@@ -217,7 +243,7 @@ interface PrivacyGlassesSettings {
 }
 
 const DEFAULT_SETTINGS: PrivacyGlassesSettings = {
-	blurOnStartup: false,
+	blurOnStartup: 'hide-private',
 	privacyGlasses: false,
 	blurLevel: 0.3,
 	blurOnIdleTimeoutSeconds: -1,
@@ -244,23 +270,27 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 		containerEl.createEl('br');
 		containerEl.createEl('a', {text: 'https://www.buymeacoffee.com/jillalberts', href:"https://www.buymeacoffee.com/jillalberts"});
 		containerEl.createEl('span', {text: ': tip jar'});
-		containerEl.createEl('p', {text: 'To activate/deactivate Privacy Glasses, click the glasses icon on the left-hand ribbon or run the "Toggle Privacy Glasses" command in the Command Palette (Ctrl-P). The command can also be bound to a keyboard shortcut if you wish.'});	
-		containerEl.createEl('p', {text: 'Experimental settings that don\'t always work as well as you might like are marked with a "⚠️". They are safe to use but can behave in annoying ways.'});
+		containerEl.createEl('p', {text: 'To activate/deactivate Privacy Glasses, click the glasses icon on the left-hand ribbon or run "Privacy Glasses" commands in the Command Palette (Ctrl-P). The command can also be bound to a keyboard shortcut if you wish.'});	
 
 		new Setting(containerEl)
 			.setName('Activate Privacy Glasses on startup')
 			.setDesc('Indicates whether or not the pluigin will be automatically activated when starting obsidian.')
-			.addToggle((toggle) => {
+			.addDropdown((toggle) => {
+				toggle.addOptions({
+					"hide-all": "Hide all",
+					"hide-private": "Hide private (default)",
+					"reveal-all": "Reveal all"
+				})
 				toggle.setValue(this.plugin.settings.blurOnStartup);
 				toggle.onChange(async (value) => {
-					this.plugin.settings.blurOnStartup = value;
+					this.plugin.settings.blurOnStartup = value as Level;
 					await this.plugin.saveSettings();
 				});
 			});
 
 		new Setting(containerEl)
-			.setName('Activate Privacy Glasses after user inactivity')
-			.setDesc('Inactivity time after which Privace Glasses will be automatically activated. -1 to never activate automatically.')
+			.setName('Hide all after user inactivity')
+			.setDesc('Inactivity time after which Privacy Glasses will hide all. -1 to disable auto-hiding.')
 			.addText((textfield) => {
 				textfield.setPlaceholder("-1");
 				textfield.inputEl.type = "number";
@@ -278,7 +308,7 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Hover To Reveal')
-			.setDesc('Indicates whether or not to reveal text when hovering the cursor over it.')
+			.setDesc('Indicates whether or not to reveal content when hovering the cursor over it.')
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.hoverToReveal);
 				toggle.onChange(async (value) => {
@@ -307,8 +337,8 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Locations with increased privacy')
-			.setDesc('Comma-separated list of directories, files in which are blurred in semi-private mode')
+			.setName('Private directories')
+			.setDesc('Comma-separated list of directories, files in which are considered private')
 			.addText(text => text
 				.setPlaceholder('finance,therapy')
 				.setValue(this.plugin.settings.privateDirs)
@@ -320,4 +350,6 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 	}
   }
 
-const privacyGlassesIcon = `<path style=" stroke:none;fill-rule:nonzero;fill:currentColor;fill-opacity:1;" d="M 18.242188 7.664062 C 15.429688 7.84375 12.015625 8.40625 6.914062 9.53125 C 6.140625 9.703125 4.328125 10.070312 2.890625 10.359375 C 1.453125 10.648438 0.234375 10.890625 0.1875 10.90625 C 0.0703125 10.929688 -0.0390625 13.554688 0.0234375 14.570312 C 0.125 16.132812 0.375 16.703125 1.5 17.992188 C 3.414062 20.1875 3.726562 20.710938 4.171875 22.539062 C 5.171875 26.609375 6.757812 31.226562 8.429688 34.914062 C 9.46875 37.21875 10.859375 38.625 13.398438 39.929688 C 17.726562 42.164062 23.382812 42.898438 29.453125 42.03125 C 33.164062 41.492188 36.179688 39.9375 38.867188 37.179688 C 40.78125 35.210938 42.304688 32.976562 43.945312 29.726562 C 44.78125 28.078125 45.03125 27.40625 45.664062 25.039062 C 46.179688 23.125 46.445312 22.335938 46.921875 21.367188 C 47.59375 19.96875 48 19.679688 49.335938 19.625 C 49.765625 19.609375 50.59375 19.632812 51.171875 19.671875 C 52.429688 19.757812 52.664062 19.851562 53.289062 20.523438 C 54.109375 21.414062 54.625 22.492188 55.304688 24.75 C 56.984375 30.34375 59.09375 34.21875 61.960938 36.992188 C 63.320312 38.304688 64.382812 39.0625 66.007812 39.875 C 69.179688 41.46875 72.679688 42.265625 76.523438 42.265625 C 83.632812 42.265625 89.484375 39.320312 92.46875 34.242188 C 93.53125 32.445312 94.09375 30.851562 95.234375 26.40625 C 96.570312 21.203125 96.90625 20.203125 97.734375 18.984375 C 98.085938 18.46875 98.71875 17.867188 99.273438 17.515625 C 99.960938 17.078125 99.960938 17.085938 99.945312 14.21875 C 99.945312 13.554688 99.945312 12.742188 99.953125 12.421875 C 99.96875 11.34375 99.609375 11.039062 97.945312 10.734375 C 96.609375 10.484375 95.679688 10.265625 93.476562 9.65625 C 90.921875 8.945312 90.515625 8.851562 88.367188 8.515625 C 83.03125 7.671875 81.625 7.539062 78.757812 7.601562 C 74.945312 7.6875 72.304688 8.0625 64.492188 9.609375 C 59.21875 10.65625 57.03125 11.023438 54.507812 11.289062 C 52.570312 11.492188 50.179688 11.570312 48.46875 11.484375 C 45.40625 11.335938 43.914062 11.109375 39.257812 10.078125 C 34.960938 9.125 34.09375 8.960938 31.203125 8.554688 C 25.0625 7.703125 21.523438 7.460938 18.242188 7.664062 Z M 18.242188 7.664062 "/>`
+const eyeSlashIcon = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 256"><path fill="currentColor" d="M53.9 34.6a8 8 0 0 0-11.8 10.8l19.2 21.1C25 88.8 9.4 123.2 8.7 124.8a8.2 8.2 0 0 0 0 6.5c.3.7 8.8 19.5 27.6 38.4c25.1 25 56.8 38.3 91.7 38.3a128.6 128.6 0 0 0 52.1-10.8l22 24.2a8 8 0 0 0 5.9 2.6a8.2 8.2 0 0 0 5.4-2.1a7.9 7.9 0 0 0 .5-11.3Zm47.3 75.9l41.7 45.8A31.6 31.6 0 0 1 128 160a32 32 0 0 1-26.8-49.5ZM128 192c-30.8 0-57.7-11.2-79.9-33.3A128.3 128.3 0 0 1 25 128c4.7-8.8 19.8-33.5 47.3-49.4l18 19.8a48 48 0 0 0 63.6 70l14.7 16.2A112.1 112.1 0 0 1 128 192Zm119.3-60.7c-.4.9-10.5 23.3-33.4 43.8a8.1 8.1 0 0 1-5.3 2a7.6 7.6 0 0 1-5.9-2.7a8 8 0 0 1 .6-11.3A131 131 0 0 0 231 128a130.3 130.3 0 0 0-23.1-30.8C185.7 75.2 158.8 64 128 64a112.9 112.9 0 0 0-19.4 1.6a8.1 8.1 0 0 1-9.2-6.6a8 8 0 0 1 6.6-9.2a132.4 132.4 0 0 1 22-1.8c34.9 0 66.6 13.3 91.7 38.3c18.8 18.9 27.3 37.7 27.6 38.5a8.2 8.2 0 0 1 0 6.5ZM134 96.6a8 8 0 0 1 3-15.8a48.3 48.3 0 0 1 38.8 42.7a8 8 0 0 1-7.2 8.7h-.8a7.9 7.9 0 0 1-7.9-7.2A32.2 32.2 0 0 0 134 96.6Z"/></svg>`;
+const eyeClosedIcon = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 256"><path fill="currentColor" d="M234.4 160.8a12 12 0 0 1-10.4 18a11.8 11.8 0 0 1-10.4-6l-16.3-28.2a126 126 0 0 1-29.4 13.5l5.2 29.4a11.9 11.9 0 0 1-9.7 13.9l-2.1.2a12 12 0 0 1-11.8-9.9l-5.1-28.7a123.5 123.5 0 0 1-16.4 1a146.3 146.3 0 0 1-16.5-1l-5.1 28.7a12 12 0 0 1-11.8 9.9l-2.1-.2a11.9 11.9 0 0 1-9.7-13.9l5.2-29.4a125.3 125.3 0 0 1-29.3-13.5L42.3 173a12.1 12.1 0 0 1-10.4 6a11.7 11.7 0 0 1-6-1.6a12 12 0 0 1-4.4-16.4l17.9-31a142.4 142.4 0 0 1-16.7-17.6a12 12 0 1 1 18.6-15.1C57.1 116.8 84.9 140 128 140s70.9-23.2 86.7-42.7a12 12 0 1 1 18.6 15.1a150.3 150.3 0 0 1-16.7 17.7Z"/></svg>`;
+const eyeIcon = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 256"><path fill="currentColor" d="M247.3 124.8c-.3-.8-8.8-19.6-27.6-38.5C194.6 61.3 162.9 48 128 48S61.4 61.3 36.3 86.3C17.5 105.2 9 124 8.7 124.8a7.9 7.9 0 0 0 0 6.4c.3.8 8.8 19.6 27.6 38.5c25.1 25 56.8 38.3 91.7 38.3s66.6-13.3 91.7-38.3c18.8-18.9 27.3-37.7 27.6-38.5a7.9 7.9 0 0 0 0-6.4ZM128 192c-30.8 0-57.7-11.2-79.9-33.3A130.3 130.3 0 0 1 25 128a130.3 130.3 0 0 1 23.1-30.8C70.3 75.2 97.2 64 128 64s57.7 11.2 79.9 33.2A130.3 130.3 0 0 1 231 128c-7.2 13.5-38.6 64-103 64Zm0-112a48 48 0 1 0 48 48a48 48 0 0 0-48-48Zm0 80a32 32 0 1 1 32-32a32.1 32.1 0 0 1-32 32Z"/></svg>`

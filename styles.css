@@ -1,5 +1,5 @@
 .privacy-glasses-blur
- :is(.nav-folder,.view-header,.inline-title,.cm-line,.tooltip,.workspace-tab-header-inner-title)
+ :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line,.tooltip,.workspace-tab-header-inner-title)
 {
 	filter: blur(var(--blurLevel));
 }
@@ -13,7 +13,7 @@
 }
 
 .privacy-glasses-blur.privacy-glasses-reveal-on-hover
- :is(.nav-folder,.view-header,.inline-title,.cm-line,.tooltip,.workspace-tab-header-inner-title):hover
+ :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line,.tooltip,.workspace-tab-header-inner-title):hover
 {
 	filter: unset;
 }
@@ -25,12 +25,23 @@
 	filter: unset;
 }
 
-.workspace-leaf-content {
+
+/* blur by default, to avoid small unblurred delay when opening */
+
+.workspace-leaf-content
+ :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line,.tooltip,.workspace-tab-header-inner-title)
+{
 	filter: blur(var(--blurLevel));
 }
 
 /* todo : switch to :has  */
-.workspace-leaf-content.privacy-glasses-reveal {
+.workspace-leaf-content.privacy-glasses-reveal
+ :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line,.tooltip,.workspace-tab-header-inner-title),
+
+.privacy-glasses-reveal-on-hover
+ .workspace-leaf-content
+ :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line,.tooltip,.workspace-tab-header-inner-title):hover
+{
 	filter: unset;
 }
 

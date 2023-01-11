@@ -11,6 +11,21 @@ function isMarkdownFileInfoView(x: unknown):x is MarkdownFileInfo {
 	return !!Object.getOwnPropertyDescriptor(anyX, 'file')
 }
 
+function viewOnBeforeStateChange(view: View, onBeforeStateChange: () => void) {
+	const anyView = view as any;
+
+	const original = anyView.__proto__.setState;
+
+	function wrapper() {
+		onBeforeStateChange();
+		return original.apply(this, arguments);
+	}
+
+	anyView.setState = wrapper.bind(view);
+
+	return anyView;
+}
+
 type Level = 'hide-all' | 'hide-private' | 'reveal-all'
 
 export default class PrivacyGlassesPlugin extends Plugin {
@@ -79,29 +94,17 @@ export default class PrivacyGlassesPlugin extends Plugin {
 			this.checkIdleTimeout();
 		}, 1000));
 
-		function patchView(view: View, onBeforeStateChange: () => void) {
-			const anyView = view as any;
-
-			const original = anyView.__proto__.setState;
-
-			function wrapper() {
-				onBeforeStateChange();
-				return original.apply(this, arguments);
-			}
-
-			anyView.setState = wrapper.bind(view);
-
-			return anyView;
-		}
-
 		this.registerEvent(this.app.workspace.on('active-leaf-change', (e) => {
-			patchView(e.view, () => {
+			// hack the view state change, because all API events are triggered after the view is already shown,
+			// in which case we are risking to show sensitive content briefly until the event is triggered
+			viewOnBeforeStateChange(e.view, () => {
 				this.revealed.forEach(r => {
 					r.removeClass('privacy-glasses-reveal');
 				});
 				this.revealed = [];
-			})
-			this.updateLeafsStyle();
+			});
+			// some panels update using the same event, so it is important to update leaves after they are ready
+			setTimeout(() => this.updateLeafsStyle(), 200);
 		}));
 
 		this.app.workspace.onLayoutReady(() => {

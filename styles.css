@@ -1,3 +1,4 @@
+
 .privacy-glasses-blur
  :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line,.tooltip,.workspace-tab-header-inner-title)
 {
@@ -27,31 +28,27 @@
 
 
 /* blur by default, to avoid small unblurred delay when opening */
-
 .workspace-leaf-content
- :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line,.tooltip,.workspace-tab-header-inner-title)
+ .cm-editor
+ :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line),
+
+.workspace-leaf-content *
 {
 	filter: blur(var(--blurLevel));
 }
 
 /* todo : switch to :has  */
 .workspace-leaf-content.privacy-glasses-reveal
- :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line,.tooltip,.workspace-tab-header-inner-title),
+ .cm-editor
+ :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line),
+
+.workspace-leaf-content.privacy-glasses-reveal *,
 
 .privacy-glasses-reveal-on-hover
  .workspace-leaf-content
- :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line,.tooltip,.workspace-tab-header-inner-title):hover
+ :is(.nav-folder,.view-header-title-container,.inline-title,.cm-line):hover
+
 {
 	filter: unset;
 }
 
-.privacy-glasses-blur-content
-{
-	filter: blur(var(--blurLevel));
-}
-
-.privacy-glasses-blur-content
- :is(img,video,svg,canvas)
-{
-	filter: blur(calc(var(--blurLevel) * 5));
-}

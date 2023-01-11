@@ -161,3 +161,13 @@ This plugin works with most themes in either Light mode or Dark Mode.
 	- Changed name to "Privacy Glasses"
 	- squashed many bugs
 - 2021-03-30: Version 0.1 (preliminary release under the name "Blurry Edit Mode"). Supported blurry text (only) in Edit Mode (only). Adjusting the blur level required manually editing a CSS file.
+
+
+
+# Test cases
+- full privacy
+	- left panels hidden, right panels hidden
+	- hover on reveal works
+- half privacy
+	- left panel visible (maybe hide conent of private folders)
+	- hover on reveal works

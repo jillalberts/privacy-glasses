@@ -4,7 +4,12 @@
 	Licensed under the MIT License (http://opensource.org/licenses/MIT) 
 */
 
-import { App, Plugin, PluginSettingTab, Setting, addIcon, ToggleComponent, Notice} from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, addIcon, ToggleComponent, Notice, MarkdownView, MarkdownFileInfo, Editor, View} from 'obsidian';
+
+function isMarkdownFileInfoView(x: unknown):x is MarkdownFileInfo {
+	const anyX = x as any;
+	return !!Object.getOwnPropertyDescriptor(anyX, 'file')
+} 
 
 export default class PrivacyGlassesPlugin extends Plugin {
 
@@ -12,9 +17,8 @@ export default class PrivacyGlassesPlugin extends Plugin {
 	statusBar: HTMLElement;
 	noticeMsg: Notice;
 	blurLevelStyleEl: HTMLElement;
-	privacyGlasses: boolean = false;
 	lastEventTime: number | undefined;
-
+	currentLevel: 'hide-all' | 'hide-private' | 'reveal-all';
 
 	async onload() {
         		
@@ -26,36 +30,68 @@ export default class PrivacyGlassesPlugin extends Plugin {
 
 		addIcon('glasses', privacyGlassesIcon);
 
-		this.addRibbonIcon('glasses', 'Toggle Privacy Glasses', () => {
-			this.toggleGlasses();
+		this.addRibbonIcon('glasses', 'Hide all', () => {
+			this.currentLevel = 'hide-all';
+			this.updateLeavesAndGlobalReveals();
+		});
+		this.addRibbonIcon('glasses', 'Reveal non-private', () => {
+			this.currentLevel = 'hide-private';
+			this.updateLeavesAndGlobalReveals();
+		});
+		this.addRibbonIcon('glasses', 'Reveal all', () => {
+			this.currentLevel = 'reveal-all';
+			this.updateLeavesAndGlobalReveals();
 		});
 
-		this.addCommand({
-			id: 'toggle-privacy-glasses', 
-			name: 'Toggle Privacy Glasses',
-			callback: () => {
-				this.toggleGlasses();
-			}
-		});
 
-
-		// toggleGlasses() below will do actual plugin activation. 
-		// set privacyGlasses field to trick it into either blurring the content or not
-		// (since toggleGlasses flips the state, we need to set it to the opposite of blurOnStartup)
-		this.privacyGlasses = !this.settings.blurOnStartup;	
-		await this.toggleGlasses(true); // flips this.privacyGlasses to false and updates statusbar. 'true' means do toggle quietly (do not display a Notice)
+		// todo: multiple levels
+		// this.addCommand({
+		// 	id: 'toggle-privacy-glasses', 
+		// 	name: 'Toggle Privacy Glasses',
+		// 	callback: () => {
+		// 		this.toggleGlasses();
+		// 	}
+		// });
 
 		this.registerInterval(window.setInterval(() => {
 			this.checkIdleTimeout();
 		}, 1000));
 
+		function patchView(view: View, onBeforeStateChange: () => void) {
+			const anyView = view as any;
+
+			const original = anyView.__proto__.setState;
+
+			function wrapper() {
+				onBeforeStateChange();
+				return original.apply(this, arguments);
+			}
+
+			anyView.setState = wrapper.bind(view);
+
+			return anyView;
+		}
+
+		this.registerEvent(this.app.workspace.on('active-leaf-change', (e) => {
+			patchView(e.view, () => {
+				this.revealed.forEach(r => {
+					r.removeClass('privacy-glasses-reveal');
+				});
+				this.revealed = [];
+			})
+			this.updateLeafsStyle();
+		}));
+
 		this.app.workspace.onLayoutReady(() => {
 			this.registerDomActivityEvents(this.app.workspace.rootSplit.win);
-		})
-
-		this.app.workspace.on('window-open', (win) => {
-			this.registerDomActivityEvents(win.win);
+			this.currentLevel = this.settings.blurOnStartup ?  'hide-all' : 'hide-private';
+			this.updateLeavesAndGlobalReveals();
+	
 		});
+
+		this.registerEvent(this.app.workspace.on('window-open', (win) => {
+			this.registerDomActivityEvents(win.win);
+		}));
 
 		this.lastEventTime = performance.now();
 	}
@@ -68,15 +104,15 @@ export default class PrivacyGlassesPlugin extends Plugin {
 		this.registerDomEvent(win, "keydown", e => {
 			this.lastEventTime = e.timeStamp;
 		});
+		this.addBlurLevelEl(win.document);
 	}
 
 	checkIdleTimeout() {
-
 		if (this.settings.blurOnIdleTimeoutSeconds < 0) {
 			return;
 		}
 
-		if (this.privacyGlasses) {
+		if (this.currentLevel === 'hide-all') {
 			return;
 		}
 
@@ -87,98 +123,87 @@ export default class PrivacyGlassesPlugin extends Plugin {
 		const now = performance.now();
 
 		if ((now - this.lastEventTime) / 1000 >= this.settings.blurOnIdleTimeoutSeconds) {
-			this.toggleGlasses();
-		}
-	}
-
-	async toggleGlasses(quiet: boolean = false) {
-
-		this.privacyGlasses = !this.privacyGlasses;
-		
-		let pgOnMsg = 'Privacy Glasses On';
-		let pgOffMsg = 'Privacy Glasses Off';
-		if (!quiet) {
-			this.noticeMsg = new Notice(this.privacyGlasses ? pgOnMsg : pgOffMsg, 2000);
-		}
-
-		this.statusBar.setText(this.privacyGlasses ? pgOnMsg : pgOffMsg);
-
-		if (this.privacyGlasses) {
-			this.addBlurLevelEl();
-		}
-		else {
-			this.removeBlurLevelEl();
-		}
-
-		this.refresh(false); // false = no settings changes to save
-	}
-
-	async refresh(saveIt: boolean) {
-
-		this.updateStyle();
-		if (saveIt) {
-			await this.saveSettings();
+			this.currentLevel = 'hide-all';
+			this.updateLeavesAndGlobalReveals();
 		}
 	}
 
 	async onunload() {
-
-		this.removeCssClasses();
-		this.removeBlurLevelEl();
 		this.statusBar.remove();
 		await this.saveSettings();
 	}
 
 	async loadSettings() {
-
 		this.settings = Object.assign(DEFAULT_SETTINGS, await this.loadData());
 	}
-	
-	async saveSettings() {
 
+	async saveSettings() {
 		await this.saveData(this.settings);
 	}
-	
-	updateStyle() {
 
-		this.removeCssClasses();
+	shouldRevealLeaf(view: View) {
+		if (this.currentLevel === 'reveal-all' || this.currentLevel === 'hide-all') {
+			return true;
+		}
 
-		if (this.privacyGlasses) {
+		if (!isMarkdownFileInfoView(view)){
+			return true;
+		}
 
-			this.updateBlurLevelEl();
+		if (view.file && !this.settings.privateDirs.contains(view.file.parent.path)){
+			return true;
+		}
 
+		return false;
+	}
+
+	revealed: HTMLElement[] = [];
+
+	updateLeafViewStyle(view: View) {
+		const shouldReveal = this.shouldRevealLeaf(view);
+		if (shouldReveal) {
+			view.containerEl.addClass('privacy-glasses-reveal');
+			this.revealed.push(view.containerEl);
+		} else {
+			view.containerEl.removeClass('privacy-glasses-reveal')
+		}
+	}
+
+	updateLeavesAndGlobalReveals() {
+		this.updateLeafsStyle();
+		this.updateGlobalRevealStyle();
+	}
+
+	updateLeafsStyle() {
+		this.app.workspace.iterateAllLeaves(e => {
+			this.updateLeafViewStyle(e.view);
+		})
+	}
+
+	updateGlobalRevealStyle() {
+		document.body.removeClass(	'privacy-glasses-blur',
+									'privacy-glasses-reveal-on-hover'
+		);
+		if (this.currentLevel === 'hide-all') {
 			document.body.classList.add('privacy-glasses-blur');
 			if (this.settings.hoverToReveal) {
 				document.body.classList.add('privacy-glasses-reveal-on-hover');
 			}
 		}
-	}	
+	}
 
-	addBlurLevelEl() {
-
-		this.blurLevelStyleEl = document.createElement('style');
+	addBlurLevelEl(doc: Document) {
+		this.blurLevelStyleEl = doc.createElement('style');
 		this.blurLevelStyleEl.id = 'privacyGlassesBlurLevel';
-		document.head.appendChild(this.blurLevelStyleEl);
+		doc.head.appendChild(this.blurLevelStyleEl);
 		this.updateBlurLevelEl();
 	}
 
 	updateBlurLevelEl() {
-
-		this.blurLevelStyleEl.textContent = `body {--blurLevel:${this.settings.blurLevel}em};`;
-	}
-
-	removeBlurLevelEl() {
-
-		if (this.blurLevelStyleEl) {
-			this.blurLevelStyleEl.remove();
+		if (!this.blurLevelStyleEl) {
+			return;
 		}
-	}
-	
-	removeCssClasses() {
-
-		document.body.removeClass(	'privacy-glasses-blur',
-									'privacy-glasses-reveal-on-hover'
-								 );
+		this.blurLevelStyleEl.textContent = `body {--blurLevel:${this.settings.blurLevel}em};`;
 	}
 }
 
@@ -223,16 +248,6 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 		containerEl.createEl('p', {text: 'Experimental settings that don\'t always work as well as you might like are marked with a "⚠️". They are safe to use but can behave in annoying ways.'});
 
 		new Setting(containerEl)
-			.setName('Privacy Glasses Activated')
-			.setDesc('Indicates whether or not the plugin is currently activated.')
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.privacyGlasses);
-				toggle.onChange(async (value) => {
-					await this.plugin.toggleGlasses();
-				});
-			});
-
-		new Setting(containerEl)
 			.setName('Activate Privacy Glasses on startup')
 			.setDesc('Indicates whether or not the pluigin will be automatically activated when starting obsidian.')
 			.addToggle((toggle) => {
@@ -268,7 +283,8 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 				toggle.setValue(this.plugin.settings.hoverToReveal);
 				toggle.onChange(async (value) => {
 					this.plugin.settings.hoverToReveal = value;
-					await this.plugin.refresh(true);
+					await this.plugin.updateLeavesAndGlobalReveals();
+					await this.plugin.saveSettings();
 				});
 			});
      
@@ -285,7 +301,8 @@ class privacyGlassesSettingTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.blurLevel = value;
 					sliderEl.setDesc(sliderElDesc + Math.round(this.plugin.settings.blurLevel*100));
-					await this.plugin.refresh(true);
+					await this.plugin.updateBlurLevelEl();
+					this.plugin.saveSettings();
 				})
 			);
 

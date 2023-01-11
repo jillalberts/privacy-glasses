@@ -24,3 +24,23 @@
 {
 	filter: unset;
 }
+
+.workspace-leaf-content {
+	filter: blur(var(--blurLevel));
+}
+
+/* todo : switch to :has  */
+.workspace-leaf-content.privacy-glasses-reveal {
+	filter: unset;
+}
+
+.privacy-glasses-blur-content
+{
+	filter: blur(var(--blurLevel));
+}
+
+.privacy-glasses-blur-content
+ :is(img,video,svg,canvas)
+{
+	filter: blur(calc(var(--blurLevel) * 5));
+}

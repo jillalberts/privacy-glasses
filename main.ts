@@ -66,6 +66,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
   privateDirsStyleEl: HTMLElement;
   lastEventTime: number | undefined;
   currentLevel: Level;
+  revealed: HTMLElement[] = [];
 
   async onload() {
     this.statusBar = this.addStatusBarItem();
@@ -152,7 +153,6 @@ export default class PrivacyGlassesPlugin extends Plugin {
   }
 
   onBeforeViewStateChange(l: WorkspaceLeaf) {
-    console.log("onBeforeViewStateChange " + l.getDisplayText());
     this.revealed.forEach((r) => {
       r.removeClass("privacy-glasses-reveal");
     });
@@ -253,8 +253,6 @@ export default class PrivacyGlassesPlugin extends Plugin {
 
     return false;
   }
-
-  revealed: HTMLElement[] = [];
 
   updateLeafViewStyle(view: View) {
     const isMd = isMarkdownFileInfoView(view) && view.editor;

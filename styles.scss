@@ -3,7 +3,8 @@ $element-selectors: (
     1,
   ".workspace-leaf-content.is-non-md-view": 1,
   ".privacy-glasses-blur-all .workspace-tab-header-inner-title": 1,
-  ":is(.media-embed, .image-container) :is(img, video, svg, canvas)": 5,
+  ".privacy-glasses-blur-all #quick-explorer": 1,
+  " :is(.media-embed, .image-container) :is(img, video, svg, canvas)": 5,
 );
 
 @each $selector, $m in $element-selectors {
@@ -20,98 +21,3 @@ $element-selectors: (
     filter: unset;
   }
 }
-
-// :is(.nav-folder-title, .nav-file-title)[data-path^="dreams"] {
-//   filter: blur(calc(var(--blurLevel) * 1));
-// }
-
-// :is(.nav-folder-title, .nav-file-title)[data-path^="dreams"]:hover {
-//   filter: unset;
-// }
-
-// .privacy-glasses-reveal-all
-//   :is(.nav-folder-title, .nav-file-title)[data-path^="dreams"] {
-//   filter: unset;
-// }
-
-// :is(.nav-folder-title, .nav-file-title)[data-path^="daily"] {
-//   filter: blur(calc(var(--blurLevel) * 1));
-// }
-
-// :is(.nav-folder-title, .nav-file-title)[data-path^="daily"]:hover {
-//   filter: unset;
-// }
-
-// .privacy-glasses-reveal-all
-//   :is(.nav-folder-title, .nav-file-title)[data-path^="daily"] {
-//   filter: unset;
-// }
-
-// .privacy-glasses-blur
-//   :is(
-//     .nav-folder,
-//     .view-header-title-container,
-//     .inline-title,
-//     .cm-line,
-//     .tooltip,
-//     .workspace-tab-header-inner-title
-//   ) {
-//   filter: blur(var(--blurLevel));
-// }
-
-// /* visual content is much easier to recognize, so blur it more */
-// .privacy-glasses-blur
-//   :is(.media-embed, .image-container)
-//   :is(img, video, svg, canvas) {
-//   filter: blur(calc(var(--blurLevel) * 5));
-// }
-
-// .privacy-glasses-blur.privacy-glasses-reveal-on-hover
-//   :is(
-//     .nav-folder,
-//     .view-header-title-container,
-//     .inline-title,
-//     .cm-line,
-//     .tooltip,
-//     .workspace-tab-header-inner-title
-//   ):hover {
-//   filter: unset;
-// }
-
-// .privacy-glasses-blur.privacy-glasses-reveal-on-hover
-//   :is(.media-embed, .image-container):hover
-//   :is(img, video, svg, canvas) {
-//   filter: unset;
-// }
-
-// /* blur by default, to avoid small unblurred delay when opening */
-// .workspace-leaf-content
-//   .cm-editor
-//   :is(.nav-folder, .view-header-title-container, .inline-title, .cm-line),
-// .workspace-leaf-content * {
-//   filter: blur(var(--blurLevel));
-// }
-
-// /* todo : switch to :has  */
-// .workspace-leaf-content.privacy-glasses-reveal
-//   .cm-editor
-//   :is(.nav-folder, .view-header-title-container, .inline-title, .cm-line),
-// .workspace-leaf-content.privacy-glasses-reveal *,
-// .privacy-glasses-reveal-on-hover
-//   .workspace-leaf-content
-//   :is(
-//     .nav-folder,
-//     .view-header-title-container,
-//     .inline-title,
-//     .cm-line
-//   ):hover {
-//   filter: unset;
-// }
-
-// .workspace-leaf-content .view-content {
-//   filter: blur(var(--blurLevel));
-// }
-
-// .workspace-leaf-content.privacy-glasses-reveal .view-content {
-//   filter: unset;
-// }

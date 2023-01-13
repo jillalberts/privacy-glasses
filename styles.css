@@ -10,6 +10,10 @@
   filter: blur(calc(var(--blurLevel) * 1));
 }
 
+.privacy-glasses-blur-all #quick-explorer {
+  filter: blur(calc(var(--blurLevel) * 1));
+}
+
 :is(.media-embed, .image-container) :is(img, video, svg, canvas) {
   filter: blur(calc(var(--blurLevel) * 5));
 }
@@ -38,10 +42,18 @@
   filter: unset;
 }
 
+.privacy-glasses-reveal-on-hover .privacy-glasses-blur-all #quick-explorer:hover {
+  filter: unset;
+}
+
+.privacy-glasses-reveal.privacy-glasses-blur-all #quick-explorer {
+  filter: unset;
+}
+
 .privacy-glasses-reveal-on-hover :is(.media-embed, .image-container) :is(img, video, svg, canvas):hover {
   filter: unset;
 }
 
-.privacy-glasses-reveal:is(.media-embed, .image-container) :is(img, video, svg, canvas) {
+.privacy-glasses-reveal :is(.media-embed, .image-container) :is(img, video, svg, canvas) {
   filter: unset;
 }/*# sourceMappingURL=styles.css.map */

@@ -63,6 +63,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
   statusBar: HTMLElement;
   noticeMsg: Notice;
   blurLevelStyleEl: HTMLElement;
+  privateDirsStyleEl: HTMLElement;
   lastEventTime: number | undefined;
   currentLevel: Level;
 
@@ -130,6 +131,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
         ? "hide-all"
         : "hide-private";
       this.updateLeavesAndGlobalReveals();
+      this.updatePrivateDirsEl(this.app.workspace.rootSplit.win.document);
       this.ensureLeavesHooked();
     });
 
@@ -286,10 +288,14 @@ export default class PrivacyGlassesPlugin extends Plugin {
   updateGlobalRevealStyle() {
     document.body.removeClass(
       "privacy-glasses-blur-all",
-      "privacy-glasses-reveal-on-hover"
+      "privacy-glasses-reveal-on-hover",
+      "privacy-glasses-reveal-all"
     );
     if (this.currentLevel === "hide-all") {
       document.body.classList.add("privacy-glasses-blur-all");
+    }
+    if (this.currentLevel === "reveal-all") {
+      document.body.classList.add("privacy-glasses-reveal-all");
     }
     if (this.settings.hoverToReveal) {
       document.body.classList.add("privacy-glasses-reveal-on-hover");
@@ -308,6 +314,30 @@ export default class PrivacyGlassesPlugin extends Plugin {
       return;
     }
     this.blurLevelStyleEl.textContent = `body {--blurLevel:${this.settings.blurLevel}em};`;
+  }
+
+  updatePrivateDirsEl(doc: Document) {
+    if (!this.privateDirsStyleEl) {
+      this.privateDirsStyleEl = doc.createElement("style");
+      this.privateDirsStyleEl.id = "privacyGlassesDirBlur";
+      doc.head.appendChild(this.privateDirsStyleEl);
+    }
+    const dirs = this.settings.privateDirs.split(",");
+    this.privateDirsStyleEl.textContent = dirs
+      .map(
+        (d) =>
+          `
+
+          :is(.nav-folder-title, .nav-file-title)[data-path^=${d}] {filter: blur(calc(var(--blurLevel) * 1))}
+
+          :is(.nav-folder-title, .nav-file-title)[data-path^=${d}]:hover {filter: unset}
+
+          .privacy-glasses-reveal-all :is(.nav-folder-title, .nav-file-title)[data-path^=${d}] {filter: unset}
+
+
+          `
+      )
+      .join("");
   }
 }
 

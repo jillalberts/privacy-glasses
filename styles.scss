@@ -21,6 +21,32 @@ $element-selectors: (
   }
 }
 
+// :is(.nav-folder-title, .nav-file-title)[data-path^="dreams"] {
+//   filter: blur(calc(var(--blurLevel) * 1));
+// }
+
+// :is(.nav-folder-title, .nav-file-title)[data-path^="dreams"]:hover {
+//   filter: unset;
+// }
+
+// .privacy-glasses-reveal-all
+//   :is(.nav-folder-title, .nav-file-title)[data-path^="dreams"] {
+//   filter: unset;
+// }
+
+// :is(.nav-folder-title, .nav-file-title)[data-path^="daily"] {
+//   filter: blur(calc(var(--blurLevel) * 1));
+// }
+
+// :is(.nav-folder-title, .nav-file-title)[data-path^="daily"]:hover {
+//   filter: unset;
+// }
+
+// .privacy-glasses-reveal-all
+//   :is(.nav-folder-title, .nav-file-title)[data-path^="daily"] {
+//   filter: unset;
+// }
+
 // .privacy-glasses-blur
 //   :is(
 //     .nav-folder,

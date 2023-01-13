@@ -1,6 +1,8 @@
 // privacy-glasses-blur-all is added to the document in 'hide-all' mode
 // privacy-glasses-reveal-on-hover is added to the document to indicate if we want to reveal on hover
-// privacy-glasses-reveal is added to '.workspace-leaf-content' after it was checked by js and found to not be 'secret'
+// privacy-glasses-reveal is added to '.workspace-leaf-content' after it was checked by js and found to not be 'secret'.
+//            the approach is to hide everything by default - this is to ensure that private app is not briefly uncovered
+//            when switching content in the views
 // is-(non)-md-view is used to distinguish between editor and side panels -
 //            this is important to be able to blur individual rows in the editor,
 //            so the can be nicely revealed on hover

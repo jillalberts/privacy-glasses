@@ -152,6 +152,8 @@ export default class PrivacyGlassesPlugin extends Plugin {
     this.lastEventTime = performance.now();
   }
 
+  // we hook into setState function of the view, because it is synchronously called
+  // before the content switch. this is to prevent private content from being accidentally briefly revealed
   onBeforeViewStateChange(l: WorkspaceLeaf) {
     this.revealed.forEach((r) => {
       r.removeClass("privacy-glasses-reveal");

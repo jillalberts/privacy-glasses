@@ -13,6 +13,7 @@ import {
   PluginSettingTab,
   Setting,
   View,
+  WorkspaceLeaf,
 } from "obsidian";
 
 function isMarkdownFileInfoView(x: unknown): x is MarkdownFileInfo {
@@ -20,14 +21,34 @@ function isMarkdownFileInfoView(x: unknown): x is MarkdownFileInfo {
   return !!Object.getOwnPropertyDescriptor(anyX, "file");
 }
 
-function viewOnBeforeStateChange(view: View, onBeforeStateChange: () => void) {
+function isHooked(view: View) {
+  const anyView = view as any;
+  const ownProps = Object.getOwnPropertyNames(anyView);
+  return (
+    ownProps.contains("setState") && typeof anyView.setState === "function"
+  );
+}
+
+function hookViewStateChanged(
+  view: View,
+  onBeforeStateChange: (view: View) => void,
+  onAfterStateChange: (view: View) => void
+) {
   const anyView = view as any;
 
   const original = anyView.__proto__.setState;
 
   function wrapper() {
-    onBeforeStateChange();
-    return original.apply(this, arguments);
+    onBeforeStateChange(view);
+    const r = original.apply(this, arguments);
+    if (typeof r.then === "function") {
+      r.then(() => {
+        onAfterStateChange(view);
+      });
+    } else {
+      onAfterStateChange(view);
+    }
+    return r;
   }
 
   anyView.setState = wrapper.bind(view);
@@ -102,27 +123,14 @@ export default class PrivacyGlassesPlugin extends Plugin {
       }, 1000)
     );
 
-    this.registerEvent(
-      this.app.workspace.on("active-leaf-change", (e) => {
-        // hack the view state change, because all API events are triggered after the view is already shown,
-        // in which case we are risking to show sensitive content briefly until the event is triggered
-        viewOnBeforeStateChange(e.view, () => {
-          this.revealed.forEach((r) => {
-            r.removeClass("privacy-glasses-reveal");
-          });
-          this.revealed = [];
-        });
-        // some panels update using the same event, so it is important to update leaves after they are ready
-        setTimeout(() => this.updateLeafsStyle(), 200);
-      })
-    );
-
     this.app.workspace.onLayoutReady(() => {
       this.registerDomActivityEvents(this.app.workspace.rootSplit.win);
+
       this.currentLevel = this.settings.blurOnStartup
         ? "hide-all"
         : "hide-private";
       this.updateLeavesAndGlobalReveals();
+      this.ensureLeavesHooked();
     });
 
     this.registerEvent(
@@ -132,6 +140,41 @@ export default class PrivacyGlassesPlugin extends Plugin {
     );
 
     this.lastEventTime = performance.now();
+  }
+
+  onBeforeViewStateChange(l: WorkspaceLeaf) {
+    console.log("onBeforeViewStateChange " + l.getDisplayText());
+    l.view.containerEl.removeClass("privacy-glasses-reveal");
+  }
+
+  onAfterViewStateChange(l: WorkspaceLeaf) {
+    // some panels update using the same event, so it is important to update leaves after they are ready
+    setTimeout(() => {
+      console.log("onAfterViewStateChange " + l.getDisplayText());
+      if (this.shouldRevealLeaf(l.view)) {
+        console.log("revealing");
+        l.view.containerEl.addClass("privacy-glasses-reveal");
+      }
+    }, 200);
+    this.ensureLeavesHooked();
+  }
+
+  ensureLeavesHooked() {
+    this.app.workspace.iterateAllLeaves((e) => {
+      if (isHooked(e.view)) {
+        return;
+      }
+
+      hookViewStateChanged(
+        e.view,
+        () => {
+          this.onBeforeViewStateChange(e);
+        },
+        () => {
+          this.onAfterViewStateChange(e);
+        }
+      );
+    });
   }
 
   registerDomActivityEvents(win: Window) {

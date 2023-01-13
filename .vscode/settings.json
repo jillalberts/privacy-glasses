@@ -3,5 +3,6 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports": true,
     "source.fixAll": true
-  }
+  },
+  "Scss2css.output": "expanded"
 }

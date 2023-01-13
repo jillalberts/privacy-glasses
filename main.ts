@@ -139,22 +139,27 @@ export default class PrivacyGlassesPlugin extends Plugin {
       })
     );
 
+    this.registerEvent(
+      this.app.workspace.on("active-leaf-change", (e) => {
+        this.ensureLeavesHooked();
+        this.updateLeafViewStyle(e.view);
+      })
+    );
+
     this.lastEventTime = performance.now();
   }
 
   onBeforeViewStateChange(l: WorkspaceLeaf) {
     console.log("onBeforeViewStateChange " + l.getDisplayText());
-    l.view.containerEl.removeClass("privacy-glasses-reveal");
+    this.revealed.forEach((r) => {
+      r.removeClass("privacy-glasses-reveal");
+    });
   }
 
   onAfterViewStateChange(l: WorkspaceLeaf) {
     // some panels update using the same event, so it is important to update leaves after they are ready
     setTimeout(() => {
-      console.log("onAfterViewStateChange " + l.getDisplayText());
-      if (this.shouldRevealLeaf(l.view)) {
-        console.log("revealing");
-        l.view.containerEl.addClass("privacy-glasses-reveal");
-      }
+      this.updateLeafsStyle();
     }, 200);
     this.ensureLeavesHooked();
   }
@@ -250,6 +255,14 @@ export default class PrivacyGlassesPlugin extends Plugin {
   revealed: HTMLElement[] = [];
 
   updateLeafViewStyle(view: View) {
+    const isMd = isMarkdownFileInfoView(view) && view.editor;
+    view.containerEl.removeClass("is-md-view", "is-non-md-view");
+    if (isMd) {
+      view.containerEl.addClass("is-md-view");
+    } else {
+      view.containerEl.addClass("is-non-md-view");
+    }
+
     const shouldReveal = this.shouldRevealLeaf(view);
     if (shouldReveal) {
       view.containerEl.addClass("privacy-glasses-reveal");
@@ -272,11 +285,11 @@ export default class PrivacyGlassesPlugin extends Plugin {
 
   updateGlobalRevealStyle() {
     document.body.removeClass(
-      "privacy-glasses-blur",
+      "privacy-glasses-blur-all",
       "privacy-glasses-reveal-on-hover"
     );
     if (this.currentLevel === "hide-all") {
-      document.body.classList.add("privacy-glasses-blur");
+      document.body.classList.add("privacy-glasses-blur-all");
     }
     if (this.settings.hoverToReveal) {
       document.body.classList.add("privacy-glasses-reveal-on-hover");

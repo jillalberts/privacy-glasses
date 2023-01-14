@@ -125,6 +125,8 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 ### 🕰 Release History
 
+- 2023-01-07: Version 0.6.0
+	- Added blur on startup, timeout, disable hover features among others thanks to @0xorial
 - 2022-10-27: Version 0.5.3
 	- Added blurring of markdown code blocks thanks to @leoccyao
 - 2022-06-04: Version 0.5.2

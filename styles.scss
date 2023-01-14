@@ -1,0 +1,33 @@
+// privacy-glasses-blur-all is added to the document in 'hide-all' mode
+// privacy-glasses-reveal-on-hover is added to the document to indicate if we want to reveal on hover
+// privacy-glasses-reveal is added to '.workspace-leaf-content' after it was checked by js and found to not be 'secret'.
+//            the approach is to hide everything by default - this is to ensure that private app is not briefly uncovered
+//            when switching content in the views
+// is-(non)-md-view is used to distinguish between editor and side panels -
+//            this is important to be able to blur individual rows in the editor,
+//            so the can be nicely revealed on hover
+//
+
+$element-selectors: (
+  ".workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container)":
+    1,
+  ".workspace-leaf-content.is-non-md-view": 1,
+  ".privacy-glasses-blur-all .workspace-tab-header-inner-title": 1,
+  ".privacy-glasses-blur-all #quick-explorer": 1,
+  " :is(.media-embed, .image-container) :is(img, video, svg, canvas)": 5,
+);
+
+@each $selector, $m in $element-selectors {
+  #{$selector} {
+    filter: blur(calc(var(--blurLevel) * #{$m}));
+  }
+}
+
+@each $selector, $m in $element-selectors {
+  .privacy-glasses-reveal-on-hover #{$selector}:hover {
+    filter: unset;
+  }
+  .privacy-glasses-reveal#{$selector} {
+    filter: unset;
+  }
+}

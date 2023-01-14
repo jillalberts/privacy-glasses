@@ -10,11 +10,9 @@ https://github.com/jillalberts/privacy-glasses
 
 # note:
 
-### I am no longer working on this project very actively, but the code is open-source and distributed under the MIT license, so anyone who wants to fix or improve anything is free to submit pull requests (or even fork the project!).
+#### I am no longer working on this project very actively, but the code is open-source and distributed under the MIT license, so anyone who wants to fix or improve anything is free to submit pull requests (or even fork the project!).
 
 ---
-
-https://www.buymeacoffee.com/jillalberts
 
 ### 👀 What it does
 
@@ -24,15 +22,7 @@ This plugin creates a "Privacy Glasses" icon (👓) on the left-hand ribbon as w
 
 When Privacy Glasses is active your document's text, as well as the title of the current document in the header, will be obfuscated according to the settings you choose. You can also optionally blur text in Obsidian's sidebars.
 
-- **Blurry Text**: text appears blurred and (hopefully) unreadable. 
-
-	- You can adjust the blur level in the plugin's settings.
-
-- **Solid Blocks:** Text is obscured with solid blocks of the foreground (text) color.
-
-- **Circles** (experimental): All characters appear as circles, like in a password input field. (see "Known Issues" section below)
-
-**❗ In any mode, you can temporarily reveal a small section of text simply by hovering your mouse over it.**
+**❗ You can temporarily reveal a small section of text simply by hovering your mouse over it.**
 
 - This is useful for finding your place in a document or doing a quick check for typos.
 
@@ -78,40 +68,13 @@ This plugin works with most themes in either Light mode or Dark Mode.
 	- Now you can open your documents in different panes and switch the non-sensitive one(s) to Preview Mode. The sensitive document you're working on in Edit Mode will remain obfuscated while the non-sensitive one(s) in Preview Mode will remain fully visible.
 	- If you need help with working with multiple panes, you can refer to the "Panes" section of the Obsidian Help vault.
 
-### ⚠️ Known Issues
-
-- When "Circles" (experimental) obfuscation mode is activated:
-	- In Edit Mode the cursor sometimes appears to jump around.
-		- This happens because this mode makes every character the same width, which can alter the line length. The cursor will remain on the same character -- you can keep typing from where you left off -- but it just displays a bit oddly.
-	- In both Edit Mode and Preview Mode the line height can change unexpectedly when you hover your mouse over a section.
-
-- "Solid Blocks" mode works okay in Edit Mode, but in Preview Mode it messes up some formatting and generally behaves oddly.
-
-	- This is due to the CSS `display:inline` which is needed to make the blocks of color fit more tightly to the actual text (rather than being giant blocks of color even where there's no text).
-
-- In some modes, in Preview mode the titles of transcluded files are not obfuscated. This is something I will investigate and hopefully fix in a future version.
+### ⚠️ Issues
 
 - This plugin already works pretty well across a variety of themes, but **if you're seeing sections of unblurred text even when your mouse pointer isn't over it, please email me or file an issue on GitHub**.
 
 	- Please include what exactly is not blurred and what theme, extensions, and CSS snippets you're using. In the meantime, you can try using a different theme as a workaround. (If the issue persists across themes, including with the "None" theme, it's almost certainly caused by interference with another plugin or snippet; I'd be interested in taking a look.)
 
-- There are undoubtedly many bugs remaining (though they should only affect appearance, nothing that would endanger your files). Please report issues per the "Contact the author" section below.
-
-### 💡 Possible ideas for future versions:
-
-*You can suggest a feature by opening an issue on github.*
-
-- Improve compatibilty with popular plugins? Suggestions and bug reports welcome!
-
-- Further compatibility testing with a variety of themes and uses
-
-- Improve CSS
-
-- Investigate other ways to obfuscate text???
-
-- Test whether plugin works on Obsidian Mobile beta
-
-- Add the ability to define certain "private" or "sensitive" pages on which the plugin turns on automatically?
+- Please report issues per the "Contact the author" section below.
 
 ### ✍ Contact the author
 
@@ -121,10 +84,14 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 	- or email jillian dot alberts at gmail dot com
 
-- Support the development of this free plugin: https://www.buymeacoffee.com/jillalberts
+### 🕰 Release 
 
-### 🕰 Release History
-
+- 2023-01-14: Version 0.7.0
+	- Major update, thanks to @0xorial . 
+		- (tech) switched to .scss
+    	- (tech) started using prettier
+    	- switched to {filter: blur()} for blurring everything
+    	- implemented "3-mode" way - reveal all/blur all/blur content in folders, specified as private
 - 2023-01-07: Version 0.6.0
 	- Added blur on startup, timeout, disable hover features among others thanks to @0xorial
 - 2022-10-27: Version 0.5.3

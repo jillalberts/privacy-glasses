@@ -1,7 +1,7 @@
 /* 	
-	Privacy Glasses plugin for Obsidian
-	Copyright 2021 Jill Alberts
-	Licensed under the MIT License (http://opensource.org/licenses/MIT) 
+  Privacy Glasses plugin for Obsidian
+  Copyright 2021 Jill Alberts
+  Licensed under the MIT License (http://opensource.org/licenses/MIT) 
 */
 
 import {
@@ -13,7 +13,7 @@ import {
   PluginSettingTab,
   Setting,
   View,
-  WorkspaceLeaf,
+  WorkspaceLeaf
 } from "obsidian";
 
 function isMarkdownFileInfoView(x: unknown): x is MarkdownFileInfo {
@@ -380,12 +380,6 @@ class privacyGlassesSettingTab extends PluginSettingTab {
     containerEl.createEl("span", {
       text: ": documentation, report issues, contact info",
     });
-    containerEl.createEl("br");
-    containerEl.createEl("a", {
-      text: "https://www.buymeacoffee.com/jillalberts",
-      href: "https://www.buymeacoffee.com/jillalberts",
-    });
-    containerEl.createEl("span", { text: ": tip jar" });
     containerEl.createEl("p", {
       text: 'To activate/deactivate Privacy Glasses, click the glasses icon on the left-hand ribbon or run "Privacy Glasses" commands in the Command Palette (Ctrl-P). The command can also be bound to a keyboard shortcut if you wish.',
     });
@@ -448,7 +442,7 @@ class privacyGlassesSettingTab extends PluginSettingTab {
     let sliderElDesc = "Higher is blurrier. Default=60, current=";
     sliderEl
       .setName(
-        'Blur Level (only affects elements for which "Blurry Text" is selected below)'
+        'Blur Level'
       )
       .setDesc(sliderElDesc + Math.round(this.plugin.settings.blurLevel * 100))
       // ^ need rounding to not show values like '55.00000000000001'

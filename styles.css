@@ -18,11 +18,19 @@
   filter: blur(calc(var(--blurLevel) * 5));
 }
 
+.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container).cm-active {
+  filter: unset;
+}
+
 .privacy-glasses-reveal-on-hover .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container):hover {
   filter: unset;
 }
 
 .privacy-glasses-reveal.workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container) {
+  filter: unset;
+}
+
+.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-non-md-view.cm-active {
   filter: unset;
 }
 
@@ -34,6 +42,10 @@
   filter: unset;
 }
 
+.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all .workspace-tab-header-inner-title.cm-active {
+  filter: unset;
+}
+
 .privacy-glasses-reveal-on-hover .privacy-glasses-blur-all .workspace-tab-header-inner-title:hover {
   filter: unset;
 }
@@ -42,11 +54,19 @@
   filter: unset;
 }
 
+.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all #quick-explorer.cm-active {
+  filter: unset;
+}
+
 .privacy-glasses-reveal-on-hover .privacy-glasses-blur-all #quick-explorer:hover {
   filter: unset;
 }
 
 .privacy-glasses-reveal.privacy-glasses-blur-all #quick-explorer {
+  filter: unset;
+}
+
+.privacy-glasses-reveal-under-caret :is(.media-embed, .image-container) :is(img, video, svg, canvas).cm-active {
   filter: unset;
 }
 

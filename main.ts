@@ -128,9 +128,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
     this.app.workspace.onLayoutReady(() => {
       this.registerDomActivityEvents(this.app.workspace.rootSplit.win);
 
-      this.currentLevel = this.settings.blurOnStartup
-        ? "hide-all"
-        : "hide-private";
+      this.currentLevel = this.settings.blurOnStartup;
       this.updateLeavesAndGlobalReveals();
       this.updatePrivateDirsEl(this.app.workspace.rootSplit.win.document);
       this.ensureLeavesHooked();
@@ -163,7 +161,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
   onAfterViewStateChange(l: WorkspaceLeaf) {
     // some panels update using the same event, so it is important to update leaves after they are ready
     setTimeout(() => {
-      this.updateLeafsStyle();
+      this.updateLeavesStyle();
     }, 200);
     this.ensureLeavesHooked();
   }
@@ -275,11 +273,11 @@ export default class PrivacyGlassesPlugin extends Plugin {
   }
 
   updateLeavesAndGlobalReveals() {
-    this.updateLeafsStyle();
+    this.updateLeavesStyle();
     this.updateGlobalRevealStyle();
   }
 
-  updateLeafsStyle() {
+  updateLeavesStyle() {
     this.app.workspace.iterateAllLeaves((e) => {
       this.updateLeafViewStyle(e.view);
     });
@@ -316,8 +314,8 @@ export default class PrivacyGlassesPlugin extends Plugin {
     this.blurLevelStyleEl.textContent = `body {--blurLevel:${this.settings.blurLevel}em};`;
   }
 
-  updatePrivateDirsEl(doc: Document) {
-    if (!this.privateDirsStyleEl) {
+  updatePrivateDirsEl(doc?: Document) {
+    if (doc && !this.privateDirsStyleEl) {
       this.privateDirsStyleEl = doc.createElement("style");
       this.privateDirsStyleEl.id = "privacyGlassesDirBlur";
       doc.head.appendChild(this.privateDirsStyleEl);
@@ -403,7 +401,7 @@ class privacyGlassesSettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("Hide all after user inactivity")
+      .setName("Hide all after user inactivity (seconds)")
       .setDesc(
         "Inactivity time after which Privacy Glasses will hide all. -1 to disable auto-hiding."
       )
@@ -472,6 +470,8 @@ class privacyGlassesSettingTab extends PluginSettingTab {
           .onChange(async (value) => {
             this.plugin.settings.privateDirs = value;
             await this.plugin.saveSettings();
+            this.plugin.updateLeavesAndGlobalReveals();
+            this.plugin.updatePrivateDirsEl();
           })
       );
   }

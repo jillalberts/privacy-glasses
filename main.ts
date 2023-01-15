@@ -245,6 +245,16 @@ export default class PrivacyGlassesPlugin extends Plugin {
     }
 
     if (
+      view.editor &&
+      this.settings.privateNoteMarker &&
+      this.settings.privateNoteMarker !== ""
+    ) {
+      if (view.editor.getLine(0) === this.settings.privateNoteMarker) {
+        return false;
+      }
+    }
+
+    if (
       view.file &&
       !this.settings.privateDirs.contains(view.file.parent.path)
     ) {
@@ -350,6 +360,7 @@ interface PrivacyGlassesSettings {
   hoverToReveal: boolean;
   revealUnderCaret: boolean;
   privateDirs: string;
+  privateNoteMarker: string;
 }
 
 const DEFAULT_SETTINGS: PrivacyGlassesSettings = {
@@ -359,6 +370,7 @@ const DEFAULT_SETTINGS: PrivacyGlassesSettings = {
   hoverToReveal: true,
   revealUnderCaret: false,
   privateDirs: "",
+  privateNoteMarker: "#private",
 };
 
 class privacyGlassesSettingTab extends PluginSettingTab {
@@ -488,6 +500,20 @@ class privacyGlassesSettingTab extends PluginSettingTab {
             await this.plugin.saveSettings();
             this.plugin.updateLeavesAndGlobalReveals();
             this.plugin.updatePrivateDirsEl();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Private note marker")
+      .setDesc("Start a note with this text to mark note as private")
+      .addText((text) =>
+        text
+          .setPlaceholder("#private")
+          .setValue(this.plugin.settings.privateNoteMarker)
+          .onChange(async (value) => {
+            this.plugin.settings.privateNoteMarker = value;
+            await this.plugin.saveSettings();
+            this.plugin.updateLeavesStyle();
           })
       );
   }

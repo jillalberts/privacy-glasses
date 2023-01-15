@@ -18,6 +18,10 @@
   filter: blur(calc(var(--blurLevel) * 5));
 }
 
+.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container).inline-title:focus-within {
+  filter: unset;
+}
+
 .privacy-glasses-reveal-under-caret .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container).cm-active {
   filter: unset;
 }
@@ -27,6 +31,10 @@
 }
 
 .privacy-glasses-reveal.workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container) {
+  filter: unset;
+}
+
+.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-non-md-view.inline-title:focus-within {
   filter: unset;
 }
 
@@ -42,6 +50,10 @@
   filter: unset;
 }
 
+.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all .workspace-tab-header-inner-title.inline-title:focus-within {
+  filter: unset;
+}
+
 .privacy-glasses-reveal-under-caret .privacy-glasses-blur-all .workspace-tab-header-inner-title.cm-active {
   filter: unset;
 }
@@ -54,6 +66,10 @@
   filter: unset;
 }
 
+.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all #quick-explorer.inline-title:focus-within {
+  filter: unset;
+}
+
 .privacy-glasses-reveal-under-caret .privacy-glasses-blur-all #quick-explorer.cm-active {
   filter: unset;
 }
@@ -63,6 +79,10 @@
 }
 
 .privacy-glasses-reveal.privacy-glasses-blur-all #quick-explorer {
+  filter: unset;
+}
+
+.privacy-glasses-reveal-under-caret :is(.media-embed, .image-container) :is(img, video, svg, canvas).inline-title:focus-within {
   filter: unset;
 }
 

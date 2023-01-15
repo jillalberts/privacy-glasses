@@ -25,6 +25,7 @@ $element-selectors: (
 }
 
 $reveal-templates: (
+  ".privacy-glasses-reveal-under-caret " ".inline-title:focus-within",
   ".privacy-glasses-reveal-under-caret " ".cm-active",
   ".privacy-glasses-reveal-on-hover " ":hover",
   ".privacy-glasses-reveal"

@@ -86,12 +86,17 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 ### 🕰 Release 
 
+- 2023-01-15: Version 0.7.1
+	- Finish up the major update, thanks again to the work of #0xorial 
+		- Fixed startup blurring setting.
+    	- Implemented revealing under caret
+    	- Implemented marking note as private
 - 2023-01-14: Version 0.7.0
 	- Major update, thanks to @0xorial . 
-		- (tech) switched to .scss
-    	- (tech) started using prettier
-    	- switched to {filter: blur()} for blurring everything
-    	- implemented "3-mode" way - reveal all/blur all/blur content in folders, specified as private
+		- (Tech) Switched to .scss
+    	- (Tech) Started using prettier
+    	- Switched to {filter: blur()} for blurring everything
+    	- Implemented "3-mode" way - reveal all/blur all/blur content in folders, specified as private
 - 2023-01-07: Version 0.6.0
 	- Added blur on startup, timeout, disable hover features among others thanks to @0xorial
 - 2022-10-27: Version 0.5.3

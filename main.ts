@@ -56,7 +56,33 @@ function hookViewStateChanged(
   return anyView;
 }
 
-type Level = "hide-all" | "hide-private" | "reveal-all";
+/**
+ * Constants
+ */
+
+enum Level {
+  HideAll = "hide-all",
+  HidePrivate = "hide-private",
+  RevealAll = "reveal-all",
+  RevealHeadlines = "reveal-headlines"
+}
+
+enum CssClass {
+  BlurAll = "privacy-glasses-blur-all",
+  RevealOnHover = "privacy-glasses-reveal-on-hover",
+  RevealAll = "privacy-glasses-reveal-all",
+  RevealUnderCaret = "privacy-glasses-reveal-under-caret",
+  RevealHeadlines = "privacy-glasses-reveal-headlines",
+  Reveal = "privacy-glasses-reveal",
+  IsMdView = "is-md-view",
+  IsNonMdView = "is-non-md-view",
+  IsMdViewHeadlinesOnly = "is-md-view-headlines-only",
+  PrivacyGlassesReveal = "privacy-glasses-reveal"
+}
+
+/**
+ * Main
+ */
 
 export default class PrivacyGlassesPlugin extends Plugin {
   settings: PrivacyGlassesSettings;
@@ -78,17 +104,22 @@ export default class PrivacyGlassesPlugin extends Plugin {
     addIcon("eye", eyeIcon);
     addIcon("eye-closed", eyeClosedIcon);
     addIcon("eye-slash", eyeSlashIcon);
+    addIcon("eye-glasses", eyeGlasses);
 
     this.addRibbonIcon("eye-closed", "Hide all", () => {
-      this.currentLevel = "hide-all";
+      this.currentLevel = Level.HideAll;
       this.updateLeavesAndGlobalReveals();
     });
     this.addRibbonIcon("eye-slash", "Reveal non-private", () => {
-      this.currentLevel = "hide-private";
+      this.currentLevel = Level.HidePrivate;
+      this.updateLeavesAndGlobalReveals();
+    });
+    this.addRibbonIcon("eye-glasses", "Reveal headlines only", () => {
+      this.currentLevel = Level.RevealHeadlines;
       this.updateLeavesAndGlobalReveals();
     });
     this.addRibbonIcon("eye", "Reveal all", () => {
-      this.currentLevel = "reveal-all";
+      this.currentLevel = Level.RevealAll;
       this.updateLeavesAndGlobalReveals();
     });
 
@@ -96,7 +127,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
       id: "privacy-glasses-hide-all",
       name: "Privacy Glasses - hide all",
       callback: () => {
-        this.currentLevel = "hide-all";
+        this.currentLevel = Level.HideAll;
         this.updateLeavesAndGlobalReveals();
       },
     });
@@ -105,7 +136,16 @@ export default class PrivacyGlassesPlugin extends Plugin {
       id: "privacy-glasses-hide-private",
       name: "Privacy Glasses - hide files in folders marked as private",
       callback: () => {
-        this.currentLevel = "hide-private";
+        this.currentLevel = Level.HidePrivate;
+        this.updateLeavesAndGlobalReveals();
+      },
+    });
+
+    this.addCommand({
+      id: "privacy-glasses-reveal-headlines",
+      name: "Privacy Glasses - reveal headlines only, keeping body content hidden",
+      callback: () => {
+        this.currentLevel = Level.RevealHeadlines;
         this.updateLeavesAndGlobalReveals();
       },
     });
@@ -114,7 +154,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
       id: "privacy-glasses-reveal-all",
       name: "Privacy Glasses - do not hide anything",
       callback: () => {
-        this.currentLevel = "reveal-all";
+        this.currentLevel = Level.RevealAll;
         this.updateLeavesAndGlobalReveals();
       },
     });
@@ -127,7 +167,6 @@ export default class PrivacyGlassesPlugin extends Plugin {
 
     this.app.workspace.onLayoutReady(() => {
       this.registerDomActivityEvents(this.app.workspace.rootSplit.win);
-
       this.currentLevel = this.settings.blurOnStartup;
       this.updateLeavesAndGlobalReveals();
       this.updatePrivateDirsEl(this.app.workspace.rootSplit.win.document);
@@ -154,7 +193,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
   // before the content switch. this is to prevent private content from being accidentally briefly revealed
   onBeforeViewStateChange(l: WorkspaceLeaf) {
     this.revealed.forEach((r) => {
-      r.removeClass("privacy-glasses-reveal");
+      r.removeClass(CssClass.Reveal);
     });
   }
 
@@ -199,7 +238,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
       return;
     }
 
-    if (this.currentLevel === "hide-all") {
+    if (this.currentLevel === Level.HideAll) {
       return;
     }
 
@@ -213,7 +252,7 @@ export default class PrivacyGlassesPlugin extends Plugin {
       (now - this.lastEventTime) / 1000 >=
       this.settings.blurOnIdleTimeoutSeconds
     ) {
-      this.currentLevel = "hide-all";
+      this.currentLevel = Level.HideAll;
       this.updateLeavesAndGlobalReveals();
     }
   }
@@ -232,11 +271,14 @@ export default class PrivacyGlassesPlugin extends Plugin {
   }
 
   shouldRevealLeaf(view: View) {
-    if (this.currentLevel === "reveal-all") {
+    if (this.currentLevel === Level.RevealAll) {
       return true;
     }
 
-    if (this.currentLevel === "hide-all") {
+    if (
+      this.currentLevel === Level.HideAll ||
+      this.currentLevel === Level.RevealHeadlines
+    ) {
       return false;
     }
 
@@ -266,19 +308,24 @@ export default class PrivacyGlassesPlugin extends Plugin {
 
   updateLeafViewStyle(view: View) {
     const isMd = isMarkdownFileInfoView(view) && view.editor;
-    view.containerEl.removeClass("is-md-view", "is-non-md-view");
-    if (isMd) {
-      view.containerEl.addClass("is-md-view");
+    view.containerEl.removeClass(
+      CssClass.IsMdView,
+      CssClass.IsNonMdView,
+      CssClass.IsMdViewHeadlinesOnly);
+    if (isMd && this.currentLevel === Level.RevealHeadlines) {
+      view.containerEl.addClass(CssClass.IsMdViewHeadlinesOnly);
+    } else if (isMd) {
+      view.containerEl.addClass(CssClass.IsMdView);
     } else {
-      view.containerEl.addClass("is-non-md-view");
+      view.containerEl.addClass(CssClass.IsNonMdView);
     }
 
     const shouldReveal = this.shouldRevealLeaf(view);
     if (shouldReveal) {
-      view.containerEl.addClass("privacy-glasses-reveal");
+      view.containerEl.addClass(CssClass.PrivacyGlassesReveal);
       this.revealed.push(view.containerEl);
     } else {
-      view.containerEl.removeClass("privacy-glasses-reveal");
+      view.containerEl.removeClass(CssClass.PrivacyGlassesReveal);
     }
   }
 
@@ -294,23 +341,38 @@ export default class PrivacyGlassesPlugin extends Plugin {
   }
 
   updateGlobalRevealStyle() {
-    document.body.removeClass(
-      "privacy-glasses-blur-all",
-      "privacy-glasses-reveal-on-hover",
-      "privacy-glasses-reveal-all",
-      "privacy-glasses-reveal-under-caret"
-    );
-    if (this.currentLevel === "hide-all") {
-      document.body.classList.add("privacy-glasses-blur-all");
-    }
-    if (this.currentLevel === "reveal-all") {
-      document.body.classList.add("privacy-glasses-reveal-all");
-    }
+    this.removeAllClasses();
+    this.setClassToDocumentBody(this.currentLevel);
+
     if (this.settings.hoverToReveal) {
-      document.body.classList.add("privacy-glasses-reveal-on-hover");
+      document.body.classList.add(CssClass.RevealOnHover);
     }
     if (this.settings.revealUnderCaret) {
-      document.body.classList.add("privacy-glasses-reveal-under-caret");
+      document.body.classList.add(CssClass.RevealUnderCaret);
+    }
+  }
+
+  removeAllClasses() {
+    document.body.removeClass(
+      CssClass.BlurAll,
+      CssClass.RevealOnHover,
+      CssClass.RevealAll,
+      CssClass.RevealUnderCaret,
+      CssClass.RevealHeadlines
+    );
+  }
+
+  setClassToDocumentBody(currentLevel: Level) {
+    switch (currentLevel) {
+      case Level.HideAll:
+        document.body.classList.add(CssClass.BlurAll);
+        break;
+      case Level.RevealAll:
+        document.body.classList.add(CssClass.RevealAll);
+        break;
+      case Level.RevealHeadlines:
+        document.body.classList.add(CssClass.RevealHeadlines);
+        break;
     }
   }
 
@@ -364,7 +426,7 @@ interface PrivacyGlassesSettings {
 }
 
 const DEFAULT_SETTINGS: PrivacyGlassesSettings = {
-  blurOnStartup: "hide-private",
+  blurOnStartup: Level.HidePrivate,
   blurLevel: 0.3,
   blurOnIdleTimeoutSeconds: -1,
   hoverToReveal: true,
@@ -401,13 +463,14 @@ class privacyGlassesSettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName("Activate Privacy Glasses on startup")
       .setDesc(
-        "Indicates whether or not the pluigin will be automatically activated when starting obsidian."
+        "Indicates whether the plugin is automatically activated when starting Obsidian."
       )
       .addDropdown((toggle) => {
         toggle.addOptions({
           "hide-all": "Hide all",
           "hide-private": "Hide private (default)",
           "reveal-all": "Reveal all",
+          "reveal-headlines": "Reveal headlines only"
         });
         toggle.setValue(this.plugin.settings.blurOnStartup);
         toggle.onChange(async (value) => {
@@ -439,7 +502,7 @@ class privacyGlassesSettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("Hover To Reveal")
+      .setName("Hover to reveal")
       .setDesc(
         "Indicates whether or not to reveal content when hovering the cursor over it."
       )
@@ -447,13 +510,13 @@ class privacyGlassesSettingTab extends PluginSettingTab {
         toggle.setValue(this.plugin.settings.hoverToReveal);
         toggle.onChange(async (value) => {
           this.plugin.settings.hoverToReveal = value;
-          await this.plugin.updateLeavesAndGlobalReveals();
+          this.plugin.updateLeavesAndGlobalReveals();
           await this.plugin.saveSettings();
         });
       });
 
     new Setting(containerEl)
-      .setName("Reveal Under Caret")
+      .setName("Reveal under caret")
       .setDesc(
         "Indicates whether or not to reveal content when caret is on it."
       )
@@ -461,7 +524,7 @@ class privacyGlassesSettingTab extends PluginSettingTab {
         toggle.setValue(this.plugin.settings.revealUnderCaret);
         toggle.onChange(async (value) => {
           this.plugin.settings.revealUnderCaret = value;
-          await this.plugin.updateGlobalRevealStyle();
+          this.plugin.updateGlobalRevealStyle();
           await this.plugin.saveSettings();
         });
       });
@@ -469,7 +532,7 @@ class privacyGlassesSettingTab extends PluginSettingTab {
     var sliderEl = new Setting(containerEl);
     let sliderElDesc = "Higher is blurrier. Default=60, current=";
     sliderEl
-      .setName("Blur Level")
+      .setName("Blur level")
       .setDesc(sliderElDesc + Math.round(this.plugin.settings.blurLevel * 100))
       // ^ need rounding to not show values like '55.00000000000001'
       .addSlider((slider) =>
@@ -481,7 +544,7 @@ class privacyGlassesSettingTab extends PluginSettingTab {
             sliderEl.setDesc(
               sliderElDesc + Math.round(this.plugin.settings.blurLevel * 100)
             );
-            await this.plugin.updateBlurLevelEl();
+            this.plugin.updateBlurLevelEl();
             this.plugin.saveSettings();
           })
       );
@@ -489,7 +552,7 @@ class privacyGlassesSettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName("Private directories")
       .setDesc(
-        "Comma-separated list of directories, files in which are considered private"
+        "Comma-separated list of directories, in which files are considered private"
       )
       .addText((text) =>
         text
@@ -527,3 +590,6 @@ const eyeClosedIcon = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRat
 
 // https://icon-sets.iconify.design/ph/eye/
 const eyeIcon = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 256"><path fill="currentColor" d="M247.3 124.8c-.3-.8-8.8-19.6-27.6-38.5C194.6 61.3 162.9 48 128 48S61.4 61.3 36.3 86.3C17.5 105.2 9 124 8.7 124.8a7.9 7.9 0 0 0 0 6.4c.3.8 8.8 19.6 27.6 38.5c25.1 25 56.8 38.3 91.7 38.3s66.6-13.3 91.7-38.3c18.8-18.9 27.3-37.7 27.6-38.5a7.9 7.9 0 0 0 0-6.4ZM128 192c-30.8 0-57.7-11.2-79.9-33.3A130.3 130.3 0 0 1 25 128a130.3 130.3 0 0 1 23.1-30.8C70.3 75.2 97.2 64 128 64s57.7 11.2 79.9 33.2A130.3 130.3 0 0 1 231 128c-7.2 13.5-38.6 64-103 64Zm0-112a48 48 0 1 0 48 48a48 48 0 0 0-48-48Zm0 80a32 32 0 1 1 32-32a32.1 32.1 0 0 1-32 32Z"/></svg>`;
+
+// https://icon-sets.iconify.design/ph/eyeglasses/
+const eyeGlasses = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 256"><path fill="currentColor" d="M200 40a8 8 0 0 0 0 16a16 16 0 0 1 16 16v58.08A44 44 0 0 0 145.68 152h-35.36A44 44 0 0 0 40 130.08V72a16 16 0 0 1 16-16a8 8 0 0 0 0-16a32 32 0 0 0-32 32v92a44 44 0 0 0 87.81 4h32.38a44 44 0 0 0 87.81-4V72a32 32 0 0 0-32-32ZM68 192a28 28 0 1 1 28-28a28 28 0 0 1-28 28Zm120 0a28 28 0 1 1 28-28a28 28 0 0 1-28 28Z"/></svg>`;

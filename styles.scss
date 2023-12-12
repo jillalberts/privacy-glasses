@@ -6,16 +6,19 @@
 //            when switching content in the views
 // is-(non)-md-view is used to distinguish between editor and side panels -
 //            this is important to be able to blur individual rows in the editor,
-//            so the can be nicely revealed on hover
+//            so they can be nicely revealed on hover
 //
 
 $element-selectors: (
-  ".workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container)":
-    1,
+  ".workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container)": 1,
   ".workspace-leaf-content.is-non-md-view": 1,
+  ".workspace-leaf-content.is-md-view-headlines-only :is(.cm-line, .view-header-title-container)": 1,
+  ".workspace-leaf-content.is-md-view-headlines-only .HyperMD-header": 1,
   ".privacy-glasses-blur-all .workspace-tab-header-inner-title": 1,
   ".privacy-glasses-blur-all #quick-explorer": 1,
-  " :is(.media-embed, .image-container) :is(img, video, svg, canvas)": 5,
+  ".privacy-glasses-reveal-headlines .workspace-tab-header-inner-title": 1,
+  ".privacy-glasses-reveal-headlines #quick-explorer": 1,
+  " :is(.media-embed, .image-container) :is(img, video, svg, canvas)": 5
 );
 
 @each $selector, $m in $element-selectors {

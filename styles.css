@@ -12,10 +12,6 @@
   filter: blur(calc(var(--blurLevel) * 5));
 }
 
-.workspace-leaf-content.is-md-view-headlines-only .HyperMD-header {
-  filter: unset !important;
-}
-
 .privacy-glasses-reveal-under-caret .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container).inline-title:focus-within,
 .privacy-glasses-reveal-under-caret .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container).cm-active,
 .privacy-glasses-reveal-under-caret .workspace-leaf-content.is-non-md-view.inline-title:focus-within,
@@ -40,6 +36,9 @@
 .privacy-glasses-reveal.privacy-glasses-reveal-headlines .workspace-tab-header-inner-title,
 .privacy-glasses-reveal.privacy-glasses-reveal-headlines #quick-explorer,
 .privacy-glasses-reveal :is(.media-embed, .image-container) :is(img, video, svg, canvas),
-.workspace-tab-header .workspace-tab-header-inner-title:hover {
+.workspace-tab-header .workspace-tab-header-inner-title:hover,
+.workspace-leaf-content.is-md-view-headlines-only .HyperMD-header,
+.privacy-glasses-reveal :is(.cm-callout),
+.privacy-glasses-reveal-all :is(.cm-callout) {
   filter: unset !important;
 }

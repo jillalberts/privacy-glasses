@@ -242,7 +242,6 @@ class PrivacyGlassesPlugin extends obsidian.Plugin {
         });
     }
     shouldRevealLeaf(view) {
-        var _a;
         if (this.currentLevel === Level.RevealAll) {
             return true;
         }

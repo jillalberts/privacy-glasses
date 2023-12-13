@@ -1,16 +1,10 @@
-.workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container) {
-  filter: blur(calc(var(--blurLevel) * 1));
-}
-
-.workspace-leaf-content.is-non-md-view {
-  filter: blur(calc(var(--blurLevel) * 1));
-}
-
-.privacy-glasses-blur-all .workspace-tab-header-inner-title {
-  filter: blur(calc(var(--blurLevel) * 1));
-}
-
-.privacy-glasses-blur-all #quick-explorer {
+.workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container, .cm-callout),
+.workspace-leaf-content.is-non-md-view,
+.workspace-leaf-content.is-md-view-headlines-only :is(.cm-line, .cm-callout),
+.privacy-glasses-blur-all .workspace-tab-header-inner-title,
+.privacy-glasses-blur-all #quick-explorer,
+.privacy-glasses-reveal-headlines .workspace-tab-header-inner-title,
+.privacy-glasses-reveal-headlines #quick-explorer {
   filter: blur(calc(var(--blurLevel) * 1));
 }
 
@@ -18,82 +12,34 @@
   filter: blur(calc(var(--blurLevel) * 5));
 }
 
-.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container).inline-title:focus-within {
-  filter: unset;
+.workspace-leaf-content.is-md-view-headlines-only .HyperMD-header {
+  filter: unset !important;
 }
 
-.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container).cm-active {
-  filter: unset;
+.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container).inline-title:focus-within,
+.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container).cm-active,
+.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-non-md-view.inline-title:focus-within,
+.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-non-md-view.cm-active,
+.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all .workspace-tab-header-inner-title.inline-title:focus-within,
+.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all .workspace-tab-header-inner-title.cm-active,
+.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all #quick-explorer.inline-title:focus-within,
+.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all #quick-explorer.cm-active,
+.privacy-glasses-reveal-under-caret :is(.media-embed, .image-container) :is(img, video, svg, canvas).inline-title:focus-within,
+.privacy-glasses-reveal-under-caret :is(.media-embed, .image-container) :is(img, video, svg, canvas).cm-active,
+.privacy-glasses-reveal-on-hover .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container, .cm-callout):hover,
+.privacy-glasses-reveal-on-hover .workspace-leaf-content.is-non-md-view:hover,
+.privacy-glasses-reveal-on-hover .workspace-leaf-content.is-md-view-headlines-only :is(.cm-line, .cm-callout):hover,
+.privacy-glasses-reveal-on-hover .privacy-glasses-blur-all .workspace-tab-header-inner-title:hover,
+.privacy-glasses-reveal-on-hover .privacy-glasses-reveal-headlines .workspace-tab-header-inner-title:hover,
+.privacy-glasses-reveal-on-hover .privacy-glasses-blur-all #quick-explorer:hover,
+.privacy-glasses-reveal-on-hover :is(.media-embed, .image-container) :is(img, video, svg, canvas):hover,
+.privacy-glasses-reveal.workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container),
+.privacy-glasses-reveal.workspace-leaf-content.is-non-md-view,
+.privacy-glasses-reveal.privacy-glasses-blur-all .workspace-tab-header-inner-title,
+.privacy-glasses-reveal.privacy-glasses-blur-all #quick-explorer,
+.privacy-glasses-reveal.privacy-glasses-reveal-headlines .workspace-tab-header-inner-title,
+.privacy-glasses-reveal.privacy-glasses-reveal-headlines #quick-explorer,
+.privacy-glasses-reveal :is(.media-embed, .image-container) :is(img, video, svg, canvas),
+.workspace-tab-header .workspace-tab-header-inner-title:hover {
+  filter: unset !important;
 }
-
-.privacy-glasses-reveal-on-hover .workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container):hover {
-  filter: unset;
-}
-
-.privacy-glasses-reveal.workspace-leaf-content.is-md-view :is(.inline-title, .cm-line, .view-header-title-container) {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-non-md-view.inline-title:focus-within {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-under-caret .workspace-leaf-content.is-non-md-view.cm-active {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-on-hover .workspace-leaf-content.is-non-md-view:hover {
-  filter: unset;
-}
-
-.privacy-glasses-reveal.workspace-leaf-content.is-non-md-view {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all .workspace-tab-header-inner-title.inline-title:focus-within {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all .workspace-tab-header-inner-title.cm-active {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-on-hover .privacy-glasses-blur-all .workspace-tab-header-inner-title:hover {
-  filter: unset;
-}
-
-.privacy-glasses-reveal.privacy-glasses-blur-all .workspace-tab-header-inner-title {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all #quick-explorer.inline-title:focus-within {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-under-caret .privacy-glasses-blur-all #quick-explorer.cm-active {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-on-hover .privacy-glasses-blur-all #quick-explorer:hover {
-  filter: unset;
-}
-
-.privacy-glasses-reveal.privacy-glasses-blur-all #quick-explorer {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-under-caret :is(.media-embed, .image-container) :is(img, video, svg, canvas).inline-title:focus-within {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-under-caret :is(.media-embed, .image-container) :is(img, video, svg, canvas).cm-active {
-  filter: unset;
-}
-
-.privacy-glasses-reveal-on-hover :is(.media-embed, .image-container) :is(img, video, svg, canvas):hover {
-  filter: unset;
-}
-
-.privacy-glasses-reveal :is(.media-embed, .image-container) :is(img, video, svg, canvas) {
-  filter: unset;
-}/*# sourceMappingURL=styles.css.map */

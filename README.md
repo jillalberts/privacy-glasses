@@ -86,6 +86,13 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 ### 🕰 Release 
 
+- 2023-12-12: Version 0.7.3
+    - Implement feature request/issue #19 - blur only the content that is not a header, effectively revealing only the headers of any given note
+    - Fix an issue where the note name in the header does not reveal on hover (fixed for all modes)
+    - Move all hard-coded level and CSS class names to string enums for reusability and maintainability
+    - Refactor styles.css for better readability and maintainability
+    - General code cleanup
+    - All thanks to @aurepereira !
 - 2023-01-15: Version 0.7.1
 	- Finish up the major update, thanks again to the work of #0xorial 
 		- Fixed startup blurring setting.

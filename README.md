@@ -86,6 +86,8 @@ This plugin works with most themes in either Light mode or Dark Mode.
 
 ### 🕰 Release 
 
+- 2023-12-17: Version 0.7.4
+	Fix private note marker [Enhancement] Skip note metadata to check for… thanks to @aurepereira
 - 2023-12-12: Version 0.7.3
     - Implement feature request/issue #19 - blur only the content that is not a header, effectively revealing only the headers of any given note
     - Fix an issue where the note name in the header does not reveal on hover (fixed for all modes)

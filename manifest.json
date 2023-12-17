@@ -1,7 +1,7 @@
 {
 	"id": "privacy-glasses",
 	"name": "Privacy Glasses",
-	"version": "0.7.3",
+	"version": "0.7.4",
 	"minAppVersion": "1.1",
 	"description": "Provides a button and command to obfuscate onscreen text for better privacy in public settings.",
 	"author": "Jill Alberts",

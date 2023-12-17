@@ -291,8 +291,17 @@ export default class PrivacyGlassesPlugin extends Plugin {
       this.settings.privateNoteMarker &&
       this.settings.privateNoteMarker !== ""
     ) {
-      if (view.editor.getLine(0) === this.settings.privateNoteMarker) {
-        return false;
+      let tags: string[] = [];
+      // Get tags in the note body, if any
+      if ('tags' in this.app.metadataCache.getFileCache(view.file)) {
+        tags.push(...this.app.metadataCache.getFileCache(view.file).tags.filter(x => !!x.tag).map(x => x.tag));
+      }
+      // Get tags in properties, if any
+      if ('tags' in this.app.metadataCache.getFileCache(view.file)?.frontmatter) {
+        tags.push(...this.app.metadataCache.getFileCache(view.file).frontmatter.tags.filter((x: string) => !!x));
+      }
+      if (tags && tags.length > 0) {
+        return !tags.includes(this.settings.privateNoteMarker);
       }
     }
 
